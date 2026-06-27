@@ -3,8 +3,8 @@
 // =============================================
 
 const CONFIG = {
-    // Número de WhatsApp de la empresa (con código de país 51 para Perú)
-    whatsapp: "51907008110", // <-- ESTE NÚMERO ESTÁ BIEN
+    // Número de WhatsApp de la empresa (solo 9 dígitos, sin código de país)
+    whatsapp: "907008110", // <-- AHORA SON 9 DÍGITOS
     
     // Datos del remitente (aparecen en el ticket)
     remitente: {
@@ -42,54 +42,43 @@ const observacionesInput = document.getElementById('observaciones');
 // =============================================
 
 formulario.addEventListener('submit', function(e) {
-    e.preventDefault(); // Evita que la página se recargue
+    e.preventDefault();
 
-    console.log('🔵 Formulario enviado - Iniciando proceso...');
-
-    // 1. Obtener valores de los campos
+    // 1. Obtener valores
     const nombre = nombreInput.value.trim();
     const dni = dniInput.value.trim();
     const celular = celularInput.value.trim();
     const agencia = agenciaInput.value.trim();
     const observaciones = observacionesInput.value.trim();
 
-    console.log('📋 Datos capturados:', { nombre, dni, celular, agencia, observaciones });
-
-    // 2. Validar campos obligatorios
+    // 2. Validar
     if (!nombre) {
-        alert('⚠️ Por favor, ingrese su Nombre Completo');
+        alert('⚠️ Ingrese su Nombre Completo');
         nombreInput.focus();
         return;
     }
-
     if (!dni) {
-        alert('⚠️ Por favor, ingrese su DNI / CE');
+        alert('⚠️ Ingrese su DNI / CE');
         dniInput.focus();
         return;
     }
-
     if (!celular) {
-        alert('⚠️ Por favor, ingrese su número de Celular');
+        alert('⚠️ Ingrese su número de Celular');
         celularInput.focus();
         return;
     }
-
     if (!agencia) {
-        alert('⚠️ Por favor, ingrese la Dirección de la Agencia');
+        alert('⚠️ Ingrese la Dirección de la Agencia');
         agenciaInput.focus();
         return;
     }
-
-    // Validar que el celular tenga al menos 9 dígitos
     if (celular.length < 9) {
-        alert('⚠️ El número de celular debe tener al menos 9 dígitos');
+        alert('⚠️ El celular debe tener 9 dígitos');
         celularInput.focus();
         return;
     }
 
-    console.log('✅ Validación pasada correctamente');
-
-    // 3. Construir mensaje para WhatsApp
+    // 3. Construir mensaje WhatsApp
     const mensajeWhatsApp = construirMensajeWhatsApp({
         nombre,
         dni,
@@ -98,12 +87,10 @@ formulario.addEventListener('submit', function(e) {
         observaciones
     });
 
-    console.log('📱 Mensaje WhatsApp generado:', mensajeWhatsApp);
-
-    // 4. Abrir WhatsApp
+    // 4. Abrir WhatsApp CON EL NÚMERO CORRECTO
     abrirWhatsApp(mensajeWhatsApp);
 
-    // 5. Mostrar ticket con los datos
+    // 5. Mostrar ticket
     mostrarTicket({
         nombre,
         dni,
@@ -112,56 +99,47 @@ formulario.addEventListener('submit', function(e) {
         observaciones
     });
 
-    // 6. Ocultar el formulario
+    // 6. Ocultar formulario
     document.querySelector('.contenedor').style.display = 'none';
-    
-    console.log('✅ Proceso completado exitosamente');
 });
 
 // =============================================
-// FUNCIÓN: CONSTRUIR MENSAJE PARA WHATSAPP
+// FUNCIÓN: CONSTRUIR MENSAJE WHATSAPP
 // =============================================
 
 function construirMensajeWhatsApp(datos) {
     let mensaje = '📦 *NUEVO REGISTRO DE ENVÍO*%0A%0A';
-    
     mensaje += '👤 *Nombre Completo:*%0A';
     mensaje += `${datos.nombre}%0A%0A`;
-    
     mensaje += '🆔 *DNI / CE:*%0A';
     mensaje += `${datos.dni}%0A%0A`;
-    
     mensaje += '📱 *Celular:*%0A';
     mensaje += `${datos.celular}%0A%0A`;
-    
     mensaje += '🚚 *Dirección Agencia Shalom:*%0A';
     mensaje += `${datos.agencia}%0A%0A`;
-    
     if (datos.observaciones) {
         mensaje += '📝 *Observaciones:*%0A';
         mensaje += `${datos.observaciones}%0A%0A`;
     }
-    
     mensaje += '─────────────────────%0A';
     mensaje += '📌 *Registro generado desde la web*%0A';
     mensaje += `🕐 *Fecha:* ${new Date().toLocaleDateString('es-PE')}%0A`;
     mensaje += `⏰ *Hora:* ${new Date().toLocaleTimeString('es-PE')}`;
-    
     return mensaje;
 }
 
 // =============================================
-// FUNCIÓN: ABRIR WHATSAPP
+// FUNCIÓN: ABRIR WHATSAPP - CORREGIDA
 // =============================================
 
 function abrirWhatsApp(mensaje) {
-    // CONFIGURACIÓN CORRECTA PARA WHATSAPP
-    const url = `https://wa.me/51${CONFIG.whatsapp}?text=${mensaje}`;
-    // EL "51" es el código de país de Perú
+    // 🔥 NÚMERO CORRECTO: 51 (código Perú) + 907008110 (9 dígitos)
+    const numeroCompleto = `51${CONFIG.whatsapp}`; // 51907008110
+    const url = `https://wa.me/${numeroCompleto}?text=${mensaje}`;
     
-    console.log('🔗 Abriendo WhatsApp con URL:', url);
+    console.log('📱 Abriendo WhatsApp al número:', numeroCompleto);
+    console.log('🔗 URL:', url);
     
-    // Abrir en una nueva ventana/pestaña
     window.open(url, '_blank');
 }
 
@@ -170,7 +148,6 @@ function abrirWhatsApp(mensaje) {
 // =============================================
 
 function mostrarTicket(datos) {
-    // Llenar los datos del ticket
     tNombre.textContent = `👤 ${datos.nombre}`;
     tDni.textContent = `🆔 ${datos.dni}`;
     tCelular.textContent = `📱 ${datos.celular}`;
@@ -183,73 +160,52 @@ function mostrarTicket(datos) {
         tObservaciones.style.display = 'none';
     }
     
-    // Mostrar el ticket con animación
     ticket.classList.add('visible');
     
-    // Scroll suave hacia el ticket
     setTimeout(() => {
         ticket.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
 }
 
 // =============================================
-// FUNCIÓN: IMPRIMIR TICKET
+// FUNCIÓN: IMPRIMIR
 // =============================================
 
 btnImprimir.addEventListener('click', function() {
-    console.log('🖨️ Imprimiendo ticket...');
     window.print();
 });
 
 // =============================================
-// FUNCIÓN: FORMATEAR CELULAR MIENTRAS ESCRIBE
+// FUNCIÓN: FORMATEAR CELULAR
 // =============================================
 
-celularInput.addEventListener('input', function(e) {
-    // Solo permitir números
+celularInput.addEventListener('input', function() {
     this.value = this.value.replace(/\D/g, '');
-    
-    // Limitar a 15 dígitos (código país + número)
-    if (this.value.length > 15) {
-        this.value = this.value.slice(0, 15);
+    if (this.value.length > 9) {
+        this.value = this.value.slice(0, 9);
     }
 });
 
-// =============================================
-// FUNCIÓN: FORMATEAR DNI MIENTRAS ESCRIBE
-// =============================================
-
-dniInput.addEventListener('input', function(e) {
-    // Solo permitir números y letras (para CE)
+dniInput.addEventListener('input', function() {
     this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
-    
-    // Limitar a 15 caracteres
     if (this.value.length > 15) {
         this.value = this.value.slice(0, 15);
     }
 });
 
-// =============================================
-// FUNCIÓN: NORMALIZAR MAYÚSCULAS/MINÚSCULAS
-// =============================================
-
-nombreInput.addEventListener('blur', function(e) {
-    // Capitalizar primera letra de cada palabra
+nombreInput.addEventListener('blur', function() {
     this.value = this.value
         .toLowerCase()
         .split(' ')
-        .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+        .map(p => p.charAt(0).toUpperCase() + p.slice(1))
         .join(' ');
 });
 
 // =============================================
-// FUNCIÓN: MOSTRAR FECHA Y HORA EN EL TICKET
+// FUNCIÓN: AGREGAR FECHA AL TICKET
 // =============================================
 
-// Agregar fecha y hora al ticket automáticamente
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Página cargada correctamente');
-    
     const fechaHora = document.createElement('p');
     fechaHora.style.textAlign = 'center';
     fechaHora.style.marginTop = '10px';
@@ -257,35 +213,27 @@ document.addEventListener('DOMContentLoaded', function() {
     fechaHora.style.color = '#555';
     fechaHora.innerHTML = `📅 ${new Date().toLocaleDateString('es-PE')} - ⏰ ${new Date().toLocaleTimeString('es-PE')}`;
     
-    // Insertar antes del botón de imprimir
     const btnImprimir = document.getElementById('btnImprimir');
     const ticket = document.getElementById('ticket');
     ticket.insertBefore(fechaHora, btnImprimir);
     
-    console.log('✅ Ticket preparado con fecha y hora');
+    console.log('✅ Sistema listo');
+    console.log('📱 Número WhatsApp configurado:', CONFIG.whatsapp);
 });
 
-// =============================================
-// FUNCIÓN: MANEJAR ERRORES DE CARGA DE LOGO
-// =============================================
-
-// Si el logo no se carga, mostrar un texto alternativo
+// Manejador de error de logo
 document.addEventListener('DOMContentLoaded', function() {
     const logoImg = document.querySelector('.logo img');
     if (logoImg) {
         logoImg.onerror = function() {
-            console.warn('⚠️ Logo no encontrado, mostrando texto alternativo');
             this.style.display = 'none';
-            const fallbackText = document.createElement('h2');
-            fallbackText.textContent = 'MULTITOOLS';
-            fallbackText.style.color = '#f9c80e';
-            fallbackText.style.fontSize = '32px';
-            fallbackText.style.fontWeight = '900';
-            fallbackText.style.textAlign = 'center';
-            this.parentNode.appendChild(fallbackText);
+            const fallback = document.createElement('h2');
+            fallback.textContent = 'MULTITOOLS';
+            fallback.style.color = '#f9c80e';
+            fallback.style.fontSize = '32px';
+            fallback.style.fontWeight = '900';
+            fallback.style.textAlign = 'center';
+            this.parentNode.appendChild(fallback);
         };
     }
 });
-
-console.log('✅ Script cargado correctamente - Versión 2.0');
-console.log('📱 Número de WhatsApp configurado:', CONFIG.whatsapp);
