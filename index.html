@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Cliente | MULTITOOLS</title>
 
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <!-- LOGO -->
+
+    <div class="logo">
+        <img src="logo.png" alt="MULTITOOLS">
+    </div>
+
+    <h1>Registro de Datos de Envío</h1>
+
+    <p class="descripcion">
+        Complete correctamente sus datos para realizar el despacho de su pedido.
+    </p>
+
+    <form id="formulario">
+
+        <div class="campo">
+            <label>Nombre Completo *</label>
+            <input
+                type="text"
+                id="nombre"
+                placeholder="Ejemplo: Juan Pérez Gómez"
+                required>
+        </div>
+
+        <div class="campo">
+            <label>DNI / CE *</label>
+            <input
+                type="text"
+                id="dni"
+                placeholder="Ingrese su DNI o CE"
+                required>
+        </div>
+
+        <div class="campo">
+            <label>Número Celular *</label>
+            <input
+                type="tel"
+                id="celular"
+                placeholder="987654321"
+                required>
+        </div>
+
+        <div class="campo">
+            <label>Dirección Agencia Shalom *</label>
+
+            <textarea
+                id="agencia"
+                rows="4"
+                placeholder="Ejemplo:
+
+Agencia Shalom
+Av. Nicolás Arriola 1500
+La Victoria
+Lima"
+                required></textarea>
+
+        </div>
+
+        <div class="campo">
+            <label>Observaciones</label>
+
+            <textarea
+                id="observaciones"
+                rows="3"
+                placeholder="Información adicional (opcional)"></textarea>
+
+        </div>
+
+        <button type="submit" class="btn-enviar">
+
+            ENVIAR REGISTRO
+
+        </button>
+
+    </form>
+
+</div>
+
+<!-- ========================= -->
+
+<div id="ticket" class="ticket oculto">
+
+    <h2>MULTITOOLS</h2>
+
+    <hr>
+
+    <h3>REMITE</h3>
+
+    <p><strong>Alexander Vásquez</strong></p>
+
+    <p>MULTITOOLS</p>
+
+    <p>RUC: 2060XXXXXXXX</p>
+
+    <p>Cel: 907008110</p>
+
+    <hr>
+
+    <h3>DESTINATARIO</h3>
+
+    <p id="tNombre"></p>
+
+    <p id="tDni"></p>
+
+    <p id="tCelular"></p>
+
+    <p id="tAgencia"></p>
+
+    <p id="tObservaciones"></p>
+
+    <hr>
+
+    <button id="btnImprimir">
+
+        IMPRIMIR TICKET
+
+    </button>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
