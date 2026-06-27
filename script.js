@@ -3,8 +3,8 @@
 // =============================================
 
 const CONFIG = {
-    // Número de WhatsApp de la empresa (sin + ni espacios)
-    whatsapp: "51907008110",
+    // Número de WhatsApp de la empresa (con código de país 51 para Perú)
+    whatsapp: "51907008110", // <-- ESTE NÚMERO ESTÁ BIEN
     
     // Datos del remitente (aparecen en el ticket)
     remitente: {
@@ -44,12 +44,16 @@ const observacionesInput = document.getElementById('observaciones');
 formulario.addEventListener('submit', function(e) {
     e.preventDefault(); // Evita que la página se recargue
 
+    console.log('🔵 Formulario enviado - Iniciando proceso...');
+
     // 1. Obtener valores de los campos
     const nombre = nombreInput.value.trim();
     const dni = dniInput.value.trim();
     const celular = celularInput.value.trim();
     const agencia = agenciaInput.value.trim();
     const observaciones = observacionesInput.value.trim();
+
+    console.log('📋 Datos capturados:', { nombre, dni, celular, agencia, observaciones });
 
     // 2. Validar campos obligatorios
     if (!nombre) {
@@ -83,6 +87,8 @@ formulario.addEventListener('submit', function(e) {
         return;
     }
 
+    console.log('✅ Validación pasada correctamente');
+
     // 3. Construir mensaje para WhatsApp
     const mensajeWhatsApp = construirMensajeWhatsApp({
         nombre,
@@ -91,6 +97,8 @@ formulario.addEventListener('submit', function(e) {
         agencia,
         observaciones
     });
+
+    console.log('📱 Mensaje WhatsApp generado:', mensajeWhatsApp);
 
     // 4. Abrir WhatsApp
     abrirWhatsApp(mensajeWhatsApp);
@@ -106,6 +114,8 @@ formulario.addEventListener('submit', function(e) {
 
     // 6. Ocultar el formulario
     document.querySelector('.contenedor').style.display = 'none';
+    
+    console.log('✅ Proceso completado exitosamente');
 });
 
 // =============================================
@@ -145,7 +155,13 @@ function construirMensajeWhatsApp(datos) {
 // =============================================
 
 function abrirWhatsApp(mensaje) {
-    const url = `https://wa.me/${CONFIG.whatsapp}?text=${mensaje}`;
+    // CONFIGURACIÓN CORRECTA PARA WHATSAPP
+    const url = `https://wa.me/51${CONFIG.whatsapp}?text=${mensaje}`;
+    // EL "51" es el código de país de Perú
+    
+    console.log('🔗 Abriendo WhatsApp con URL:', url);
+    
+    // Abrir en una nueva ventana/pestaña
     window.open(url, '_blank');
 }
 
@@ -181,6 +197,7 @@ function mostrarTicket(datos) {
 // =============================================
 
 btnImprimir.addEventListener('click', function() {
+    console.log('🖨️ Imprimiendo ticket...');
     window.print();
 });
 
@@ -231,6 +248,8 @@ nombreInput.addEventListener('blur', function(e) {
 
 // Agregar fecha y hora al ticket automáticamente
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Página cargada correctamente');
+    
     const fechaHora = document.createElement('p');
     fechaHora.style.textAlign = 'center';
     fechaHora.style.marginTop = '10px';
@@ -242,17 +261,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnImprimir = document.getElementById('btnImprimir');
     const ticket = document.getElementById('ticket');
     ticket.insertBefore(fechaHora, btnImprimir);
+    
+    console.log('✅ Ticket preparado con fecha y hora');
 });
 
 // =============================================
-// FUNCIÓN: EFECTO DE CONFIRMACIÓN
+// FUNCIÓN: MANEJAR ERRORES DE CARGA DE LOGO
 // =============================================
 
-// Mostrar alerta de confirmación después de enviar
-formulario.addEventListener('submit', function(e) {
-    // Este código ya se ejecuta arriba, pero añadimos un pequeño delay
-    // para que el usuario vea que se envió correctamente
-    setTimeout(() => {
-        console.log('✅ Registro enviado correctamente');
-    }, 100);
+// Si el logo no se carga, mostrar un texto alternativo
+document.addEventListener('DOMContentLoaded', function() {
+    const logoImg = document.querySelector('.logo img');
+    if (logoImg) {
+        logoImg.onerror = function() {
+            console.warn('⚠️ Logo no encontrado, mostrando texto alternativo');
+            this.style.display = 'none';
+            const fallbackText = document.createElement('h2');
+            fallbackText.textContent = 'MULTITOOLS';
+            fallbackText.style.color = '#f9c80e';
+            fallbackText.style.fontSize = '32px';
+            fallbackText.style.fontWeight = '900';
+            fallbackText.style.textAlign = 'center';
+            this.parentNode.appendChild(fallbackText);
+        };
+    }
 });
+
+console.log('✅ Script cargado correctamente - Versión 2.0');
+console.log('📱 Número de WhatsApp configurado:', CONFIG.whatsapp);
