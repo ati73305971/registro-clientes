@@ -1,287 +1,461 @@
-/* ===========================================
-   RESET
-=========================================== */
+/* =============================================
+   ESTILOS GENERALES
+   ============================================= */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-
-    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
-
-    background:#181818;
-
-    min-height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    padding:30px;
-
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
 }
 
-/* ===========================================
-   CONTENEDOR
-=========================================== */
+/* =============================================
+   BOTÓN IMPRIMIR FLOTANTE
+   ============================================= */
 
-.contenedor{
-
-    width:100%;
-
-    max-width:650px;
-
-    background:#fff;
-
-    border-radius:20px;
-
-    padding:40px;
-
-    border:3px solid #f9c80e;
-
-    box-shadow:0 25px 60px rgba(0,0,0,.45);
-
+.btn-imprimir-flotante {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+    padding: 12px 20px;
+    background: #f9c80e;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
 }
 
-/* ===========================================
-   LOGO
-=========================================== */
-
-.logo{
-
-    text-align:center;
-
-    margin-bottom:25px;
-
+.btn-imprimir-flotante:hover {
+    transform: scale(1.05);
+    background: #ffd633;
 }
 
-.logo img{
+/* =============================================
+   CONTENEDOR PRINCIPAL
+   ============================================= */
 
-    width:190px;
-
-    max-width:100%;
-
+.contenedor {
+    background: #ffffff;
+    max-width: 600px;
+    width: 100%;
+    padding: 40px 35px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    border: 2px solid #f9c80e;
+    transition: all 0.3s ease;
 }
 
-/* ===========================================
-   TITULOS
-=========================================== */
-
-h1{
-
-    text-align:center;
-
-    font-size:30px;
-
-    color:#222;
-
-    margin-bottom:10px;
-
-    font-weight:900;
-
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.descripcion{
-
-    text-align:center;
-
-    color:#666;
-
-    margin-bottom:35px;
-
-    line-height:1.6;
-
+.logo img {
+    max-width: 180px;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-/* ===========================================
+h1 {
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.descripcion {
+    color: #555;
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* =============================================
    CAMPOS
-=========================================== */
+   ============================================= */
 
-.campo{
-
-    margin-bottom:22px;
-
+.campo {
+    margin-bottom: 22px;
 }
 
-.campo label{
+.campo label {
+    display: block;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 15px;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+}
 
-    display:block;
-
-    margin-bottom:8px;
-
-    font-weight:700;
-
-    color:#222;
-
+.campo label::after {
+    content: " *";
+    color: #d32f2f;
+    font-weight: 800;
 }
 
 .campo input,
-.campo textarea{
-
-    width:100%;
-
-    border:2px solid #ddd;
-
-    border-radius:12px;
-
-    padding:15px;
-
-    font-size:15px;
-
-    transition:.25s;
-
-    resize:vertical;
-
-    background:#fafafa;
-
-}
-
-.campo textarea{
-
-    min-height:120px;
-
+.campo textarea {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    color: #1a1a1a;
 }
 
 .campo input:focus,
-.campo textarea:focus{
-
-    outline:none;
-
-    border-color:#f9c80e;
-
-    background:#fff;
-
-    box-shadow:0 0 0 4px rgba(249,200,14,.18);
-
+.campo textarea:focus {
+    border-color: #f9c80e;
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(249, 200, 14, 0.2);
 }
 
-/* ===========================================
-   PEDIDO
-=========================================== */
-
-textarea:disabled{
-
-    background:#efefef;
-
-    color:#777;
-
-    cursor:not-allowed;
-
+.campo textarea {
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.6;
 }
 
-/* ===========================================
-   BOTON
-=========================================== */
+/* =============================================
+   BOTÓN ENVIAR
+   ============================================= */
 
-.btn-enviar{
-
-    width:100%;
-
-    padding:18px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:#f9c80e;
-
-    color:#111;
-
-    font-size:20px;
-
-    font-weight:900;
-
-    cursor:pointer;
-
-    transition:.25s;
-
-    text-transform:uppercase;
-
-    letter-spacing:2px;
-
-    box-shadow:0 6px #c59c00;
-
+.btn-enviar {
+    width: 100%;
+    padding: 16px;
+    background: #f9c80e;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 0 #b38f0a;
+    margin-top: 10px;
 }
 
-.btn-enviar:hover{
-
-    transform:translateY(-2px);
-
-    background:#ffd739;
-
+.btn-enviar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #b38f0a;
+    background: #ffd633;
 }
 
-.btn-enviar:active{
-
-    transform:translateY(4px);
-
-    box-shadow:0 2px #c59c00;
-
+.btn-enviar:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #b38f0a;
 }
 
-/* ===========================================
+/* =============================================
+   TICKET - TAMAÑO PARA MINI IMPRESORA
+   ============================================= */
+
+.ticket {
+    display: none;
+    background: #ffffff;
+    max-width: 400px;
+    width: 100%;
+    padding: 25px 20px;
+    border: 3px solid #f9c80e;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    margin-top: 30px;
+    transition: all 0.3s ease;
+}
+
+.ticket.visible {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket h2 {
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    color: #1a1a1a;
+    letter-spacing: 3px;
+}
+
+.ticket-id {
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    background: #f5f5f5;
+    padding: 4px 10px;
+    border-radius: 5px;
+}
+
+.ticket hr {
+    border: none;
+    border-top: 2px dashed #1a1a1a;
+    margin: 12px 0;
+}
+
+.ticket-section {
+    margin: 8px 0;
+}
+
+.ticket h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 3px;
+}
+
+.ticket p {
+    font-size: 13px;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+    line-height: 1.5;
+}
+
+.ticket p strong {
+    font-weight: 700;
+}
+
+/* =============================================
+   PEDIDO EDITABLE
+   ============================================= */
+
+.pedido-content {
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 8px 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    min-height: 50px;
+    border: 2px dashed #ddd;
+    transition: all 0.3s ease;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.pedido-content:focus {
+    border-color: #f9c80e;
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 200, 14, 0.2);
+}
+
+.editable-hint {
+    font-size: 10px;
+    color: #999;
+    display: block;
+    text-align: center;
+    margin-top: 4px;
+}
+
+/* =============================================
+   BOTÓN GUARDAR
+   ============================================= */
+
+.btn-guardar {
+    width: 100%;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-guardar:hover {
+    background: #218838;
+    transform: scale(1.02);
+}
+
+.ticket-footer {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.ticket-footer p {
+    font-size: 11px;
+    color: #555;
+}
+
+/* =============================================
+   OCULTO
+   ============================================= */
+
+.oculto {
+    display: none !important;
+}
+
+/* =============================================
    RESPONSIVE
-=========================================== */
+   ============================================= */
 
-@media(max-width:650px){
-
-.contenedor{
-
-    padding:25px;
-
+@media (max-width: 480px) {
+    .contenedor {
+        padding: 25px 18px;
+    }
+    .ticket {
+        padding: 18px 15px;
+        max-width: 100%;
+    }
+    h1 {
+        font-size: 22px;
+    }
+    .campo input,
+    .campo textarea {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    .btn-enviar {
+        font-size: 17px;
+        padding: 14px;
+    }
+    .ticket h2 {
+        font-size: 20px;
+    }
+    .ticket p {
+        font-size: 12px;
+    }
+    .pedido-content {
+        font-size: 12px;
+        padding: 6px 8px;
+        min-height: 40px;
+    }
+    .btn-imprimir-flotante {
+        top: 10px;
+        right: 10px;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
 }
 
-.logo img{
+/* =============================================
+   IMPRESIÓN - TAMAÑO TICKET (80mm)
+   ============================================= */
 
-    width:150px;
+@media print {
+    @page {
+        size: 80mm auto;
+        margin: 5mm 3mm;
+    }
 
-}
+    body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+    }
 
-h1{
+    .contenedor,
+    .btn-enviar,
+    .descripcion,
+    .logo,
+    .btn-imprimir-flotante,
+    #btnGuardarPedido,
+    .editable-hint {
+        display: none !important;
+    }
 
-    font-size:24px;
+    .ticket {
+        display: block !important;
+        box-shadow: none !important;
+        border: 1px solid #1a1a1a !important;
+        border-radius: 0 !important;
+        padding: 10px 12px !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        animation: none !important;
+        background: white !important;
+    }
 
-}
+    .ticket.visible {
+        display: block !important;
+    }
 
-.btn-enviar{
+    .ticket h2 {
+        font-size: 18px !important;
+        letter-spacing: 2px !important;
+    }
 
-    font-size:17px;
+    .ticket h3 {
+        font-size: 12px !important;
+        margin-bottom: 2px !important;
+        padding-bottom: 2px !important;
+    }
 
-}
+    .ticket p {
+        font-size: 11px !important;
+        margin-bottom: 2px !important;
+        line-height: 1.4 !important;
+    }
 
-}
+    .pedido-content {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        min-height: 30px !important;
+        border: 1px solid #ccc !important;
+        background: white !important;
+    }
 
-/* ===========================================
-   ANIMACION
-=========================================== */
+    .ticket hr {
+        margin: 6px 0 !important;
+        border-top: 1px dashed #1a1a1a !important;
+    }
 
-.contenedor{
+    .ticket-id {
+        font-size: 10px !important;
+        padding: 2px 6px !important;
+    }
 
-    animation:entrada .5s ease;
+    .ticket-footer p {
+        font-size: 9px !important;
+    }
 
-}
+    .ticket-link {
+        font-size: 9px !important;
+        word-break: break-all !important;
+    }
 
-@keyframes entrada{
-
-from{
-
-opacity:0;
-
-transform:translateY(30px);
-
-}
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
-
+    #btnImprimir {
+        display: none !important;
+    }
 }
