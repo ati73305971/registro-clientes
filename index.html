@@ -8,21 +8,17 @@
 </head>
 <body>
 
-<!-- BOTÓN IMPRIMIR (arriba derecha, solo visible en ticket) -->
 <button id="btnImprimirTicket" class="btn-imprimir-flotante" style="display:none;">
     🖨️ IMPRIMIR TICKET
 </button>
 
 <div class="contenedor" id="formularioContainer">
-    <!-- LOGO -->
     <div class="logo">
         <img src="logo.png" alt="MULTITOOLS" id="logoImg">
     </div>
 
     <h1>Registro de Datos de Envío</h1>
-    <p class="descripcion">
-        Complete correctamente sus datos para realizar el despacho de su pedido.
-    </p>
+    <p class="descripcion">Complete correctamente sus datos para realizar el despacho de su pedido.</p>
 
     <form id="formulario">
         <div class="campo">
@@ -50,13 +46,11 @@
             <textarea id="pedido" rows="4" placeholder="Detalle del pedido (obligatorio)" required></textarea>
         </div>
 
-        <button type="submit" class="btn-enviar">
-            ENVIAR REGISTRO
-        </button>
+        <button type="submit" class="btn-enviar">ENVIAR REGISTRO</button>
     </form>
 </div>
 
-<!-- ========================= TICKET ========================= -->
+<!-- TICKET -->
 <div id="ticket" class="ticket oculto">
     <div class="ticket-header">
         <h2>MULTITOOLS</h2>
@@ -71,7 +65,6 @@
         <p>RUC: 2060XXXXXXXX</p>
         <p>Cel: 907008110</p>
     </div>
-
     <hr>
 
     <div class="ticket-section">
@@ -81,17 +74,13 @@
         <p id="tCelular"></p>
         <p id="tAgencia"></p>
     </div>
-
     <hr>
 
     <div class="ticket-section">
         <h3>PEDIDO</h3>
-        <div id="tPedido" class="pedido-content" contenteditable="true">
-            <!-- El pedido se llena aquí y es editable -->
-        </div>
+        <div id="tPedido" class="pedido-content" contenteditable="true"></div>
         <small class="editable-hint">✏️ Haz clic para editar el pedido</small>
     </div>
-
     <hr>
 
     <div class="ticket-footer">
