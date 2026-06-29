@@ -1,12 +1,12 @@
 // =============================================
-// CONTROL DE VERSIÓN
+// CONTROL DE VERSION
 // =============================================
 
-const VERSION = '4.0';
+const VERSION = '5.0';
 const versionGuardada = localStorage.getItem('multitools_version');
 
 if (versionGuardada !== VERSION) {
-    console.log('🔄 Nueva versión detectada (v' + VERSION + ')');
+    console.log('Nueva version detectada (v' + VERSION + ')');
     localStorage.setItem('multitools_version', VERSION);
     if (!window.location.search.includes('v=')) {
         const separator = window.location.search ? '&' : '?';
@@ -15,23 +15,23 @@ if (versionGuardada !== VERSION) {
 }
 
 // =============================================
-// CONFIGURACIÓN
+// CONFIGURACION
 // =============================================
 
 const CONFIG = {
     whatsapp: "907008110",
     remitente: {
-        nombre: "Alexander Vásquez",
+        nombre: "Alexander Vasquez",
         empresa: "MULTITOOLS",
         ruc: "20611590696",
         celular: "907008110"
     }
 };
 
-console.log('✅ Sistema v' + VERSION + ' cargado');
+console.log('Sistema v' + VERSION + ' cargado');
 
 // =============================================
-// FUNCIONES DE CODIFICACIÓN
+// FUNCIONES DE CODIFICACION
 // =============================================
 
 function codificarDatos(datos) {
@@ -102,7 +102,7 @@ const pedidoInput = document.getElementById('pedido');
 // =============================================
 
 function mostrarTicket(datos) {
-    console.log('📋 Mostrando ticket:', datos);
+    console.log('Mostrando ticket:', datos);
     
     tNombre.textContent = datos.nombre || 'No especificado';
     tDni.textContent = datos.dni || 'No especificado';
@@ -111,7 +111,7 @@ function mostrarTicket(datos) {
     tPedido.textContent = datos.pedido || 'Sin pedido';
     
     const fecha = datos.fecha ? new Date(datos.fecha) : new Date();
-    tFechaHora.textContent = `${fecha.toLocaleDateString('es-PE')} ${fecha.toLocaleTimeString('es-PE')}`;
+    tFechaHora.textContent = fecha.toLocaleDateString('es-PE') + ' ' + fecha.toLocaleTimeString('es-PE');
 
     document.getElementById('formularioContainer').style.display = 'none';
     ticket.classList.remove('oculto');
@@ -137,12 +137,12 @@ formulario.addEventListener('submit', function(e) {
     const agencia = agenciaInput.value.trim();
     const pedido = pedidoInput.value.trim();
 
-    if (!nombre) { alert('⚠️ Ingrese su Nombre Completo'); nombreInput.focus(); return; }
-    if (!dni) { alert('⚠️ Ingrese su DNI / CE'); dniInput.focus(); return; }
-    if (!celular) { alert('⚠️ Ingrese su número de Celular'); celularInput.focus(); return; }
-    if (!agencia) { alert('⚠️ Ingrese la Dirección de la Agencia'); agenciaInput.focus(); return; }
-    if (!pedido) { alert('⚠️ Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
-    if (celular.length < 9) { alert('⚠️ El celular debe tener 9 dígitos'); celularInput.focus(); return; }
+    if (!nombre) { alert('Ingrese su Nombre Completo'); nombreInput.focus(); return; }
+    if (!dni) { alert('Ingrese su DNI / CE'); dniInput.focus(); return; }
+    if (!celular) { alert('Ingrese su numero de Celular'); celularInput.focus(); return; }
+    if (!agencia) { alert('Ingrese la Direccion de la Agencia'); agenciaInput.focus(); return; }
+    if (!pedido) { alert('Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
+    if (celular.length < 9) { alert('El celular debe tener 9 digitos'); celularInput.focus(); return; }
 
     const id = Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -159,9 +159,9 @@ formulario.addEventListener('submit', function(e) {
     guardarLocal(datos);
 
     const datosEncoded = codificarDatos(datos);
-    const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
+    const urlTicket = window.location.origin + window.location.pathname + '?data=' + datosEncoded;
 
-    // 📌 MENSAJE WHATSAPP MEJORADO (sin ID, sin emojis raros)
+    // MENSAJE WHATSAPP SIN EMOJIS
     const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket);
     abrirWhatsApp(mensajeWhatsApp);
 
@@ -169,30 +169,30 @@ formulario.addEventListener('submit', function(e) {
 });
 
 // =============================================
-// CONSTRUIR MENSAJE WHATSAPP (MEJORADO)
+// CONSTRUIR MENSAJE WHATSAPP (SIN EMOJIS)
 // =============================================
 
 function construirMensajeWhatsApp(datos, urlTicket) {
-    let mensaje = '📦 DATOS DE ENVIO%0A%0A';
+    let mensaje = '--- DATOS DE ENVIO ---%0A%0A';
     
-    mensaje += '👤 Nombre:%0A';
-    mensaje += `${datos.nombre}%0A%0A`;
+    mensaje += 'Nombre:%0A';
+    mensaje += datos.nombre + '%0A%0A';
     
-    mensaje += '🆔 DNI / CE:%0A';
-    mensaje += `${datos.dni}%0A%0A`;
+    mensaje += 'DNI / CE:%0A';
+    mensaje += datos.dni + '%0A%0A';
     
-    mensaje += '📱 Celular:%0A';
-    mensaje += `${datos.celular}%0A%0A`;
+    mensaje += 'Celular:%0A';
+    mensaje += datos.celular + '%0A%0A';
     
-    mensaje += '📍 Direccion Agencia:%0A';
-    mensaje += `${datos.agencia}%0A%0A`;
+    mensaje += 'Direccion Agencia:%0A';
+    mensaje += datos.agencia + '%0A%0A';
     
-    mensaje += '📝 PEDIDO:%0A';
-    mensaje += `${datos.pedido}%0A%0A`;
+    mensaje += 'PEDIDO:%0A';
+    mensaje += datos.pedido + '%0A%0A';
     
-    mensaje += '─────────────────────%0A';
-    mensaje += '🔗 Link para editar:%0A';
-    mensaje += `${urlTicket}`;
+    mensaje += '---------------------%0A';
+    mensaje += 'Link para editar:%0A';
+    mensaje += urlTicket;
     
     return mensaje;
 }
@@ -202,8 +202,8 @@ function construirMensajeWhatsApp(datos, urlTicket) {
 // =============================================
 
 function abrirWhatsApp(mensaje) {
-    const numeroCompleto = `51${CONFIG.whatsapp}`;
-    const url = `https://wa.me/${numeroCompleto}?text=${mensaje}`;
+    const numeroCompleto = '51' + CONFIG.whatsapp;
+    const url = 'https://wa.me/' + numeroCompleto + '?text=' + mensaje;
     window.open(url, '_blank');
 }
 
@@ -216,19 +216,19 @@ btnGuardarPedido.addEventListener('click', function() {
     const dataEncoded = params.get('data');
     
     if (!dataEncoded) {
-        alert('❌ No se encontraron datos');
+        alert('No se encontraron datos');
         return;
     }
     
     const datos = decodificarDatos(dataEncoded);
     if (!datos) {
-        alert('❌ Error al decodificar');
+        alert('Error al decodificar');
         return;
     }
     
     const nuevoPedido = tPedido.textContent.trim();
     if (!nuevoPedido) {
-        alert('⚠️ El pedido no puede estar vacío');
+        alert('El pedido no puede estar vacio');
         return;
     }
     
@@ -238,11 +238,11 @@ btnGuardarPedido.addEventListener('click', function() {
     guardarLocal(datos);
     
     const nuevosDatosEncoded = codificarDatos(datos);
-    const nuevaUrl = `${window.location.origin}${window.location.pathname}?data=${nuevosDatosEncoded}`;
+    const nuevaUrl = window.location.origin + window.location.pathname + '?data=' + nuevosDatosEncoded;
     
     window.history.replaceState({}, '', nuevaUrl);
     
-    alert('✅ Pedido actualizado');
+    alert('Pedido actualizado');
 });
 
 // =============================================
@@ -278,7 +278,7 @@ nombreInput.addEventListener('blur', function() {
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Cargando página...');
+    console.log('Cargando pagina...');
     
     const params = new URLSearchParams(window.location.search);
     const dataEncoded = params.get('data');
@@ -286,10 +286,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (dataEncoded) {
         const datos = decodificarDatos(dataEncoded);
         if (datos) {
-            console.log('✅ Datos cargados:', datos);
+            console.log('Datos cargados:', datos);
             mostrarTicket(datos);
         } else {
-            alert('❌ Error al cargar los datos');
+            alert('Error al cargar los datos');
         }
     }
     
@@ -307,5 +307,5 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    console.log('✅ Sistema listo');
+    console.log('Sistema listo');
 });
