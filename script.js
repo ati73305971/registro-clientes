@@ -1,23 +1,16 @@
 // =============================================
-// LIMPIAR CACHÉ DE LOCALSTORAGE (DATOS ANTIGUOS)
+// LIMPIAR CACHÉ DE LOCALSTORAGE
 // =============================================
 
-// Al cargar, verificar si hay datos antiguos en localStorage
 (function limpiarCacheLocal() {
-    const version = '6.0';
+    const version = '7.0';
     const versionGuardada = localStorage.getItem('multitools_version');
     
-    // Si la versión cambió, limpiar datos antiguos
     if (versionGuardada !== version) {
         console.log('🔄 Limpiando caché local - Nueva versión: ' + version);
-        
-        // Limpiar registros antiguos
         localStorage.removeItem('multitools_registros');
-        
-        // Guardar nueva versión
         localStorage.setItem('multitools_version', version);
         
-        // Recargar la página para aplicar cambios
         if (!window.location.search.includes('_clean=true')) {
             const separator = window.location.search ? '&' : '?';
             window.location.href = window.location.href + separator + '_clean=true';
@@ -40,7 +33,7 @@ const CONFIG = {
     }
 };
 
-console.log('✅ Sistema v6 cargado - ' + new Date().toLocaleString());
+console.log('✅ Sistema v7 cargado - ' + new Date().toLocaleString());
 
 // =============================================
 // FUNCIONES DE CODIFICACION
@@ -67,26 +60,74 @@ function decodificarDatos(dataEncoded) {
 }
 
 // =============================================
-// GUARDAR EN LOCALSTORAGE (CON ID ÚNICO)
+// GUARDAR EN LOCALSTORAGE
 // =============================================
 
+let datosActuales = null;
+let timeoutGuardado = null;
+
 function guardarLocal(datos) {
-    // Usar un timestamp como clave para evitar colisiones
-    const key = 'pedido_' + datos.id + '_' + Date.now();
     const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
     registros[datos.id] = datos;
     localStorage.setItem('multitools_registros', JSON.stringify(registros));
 }
 
-function actualizarLocal(id, nuevoPedido) {
+function obtenerLocal(id) {
     const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
-    if (registros[id]) {
-        registros[id].pedido = nuevoPedido;
-        registros[id].fecha_edicion = new Date().toISOString();
-        localStorage.setItem('multitools_registros', JSON.stringify(registros));
-        return true;
+    return registros[id] || null;
+}
+
+// =============================================
+// GUARDADO AUTOMÁTICO (CUANDO EL USUARIO ESCRIBE)
+// =============================================
+
+function guardarCambiosAutomatico() {
+    if (!datosActuales) return;
+    
+    // Obtener los valores actuales de los campos editables
+    const nombre = document.getElementById('tNombre')?.textContent.trim() || '';
+    const dni = document.getElementById('tDni')?.textContent.trim() || '';
+    const celular = document.getElementById('tCelular')?.textContent.trim() || '';
+    const agencia = document.getElementById('tAgencia')?.textContent.trim() || '';
+    const pedido = document.getElementById('tPedido')?.textContent.trim() || '';
+    
+    // Verificar si hubo cambios
+    if (datosActuales.nombre === nombre && 
+        datosActuales.dni === dni && 
+        datosActuales.celular === celular && 
+        datosActuales.agencia === agencia && 
+        datosActuales.pedido === pedido) {
+        return; // No hay cambios
     }
-    return false;
+    
+    // Actualizar datos
+    datosActuales.nombre = nombre || 'No especificado';
+    datosActuales.dni = dni || 'No especificado';
+    datosActuales.celular = celular || 'No especificado';
+    datosActuales.agencia = agencia || 'No especificado';
+    datosActuales.pedido = pedido || 'Sin pedido';
+    datosActuales.fecha_edicion = new Date().toISOString();
+    
+    // Guardar en localStorage
+    guardarLocal(datosActuales);
+    
+    // Actualizar el link (sin recargar)
+    const datosEncoded = codificarDatos(datosActuales);
+    const nuevaUrl = window.location.origin + window.location.pathname + '?data=' + datosEncoded;
+    window.history.replaceState({}, '', nuevaUrl);
+    
+    // Mostrar indicador de guardado
+    const indicator = document.getElementById('autoSaveIndicator');
+    if (indicator) {
+        indicator.style.display = 'block';
+        indicator.textContent = '✓ Cambios guardados ' + new Date().toLocaleTimeString();
+        clearTimeout(timeoutGuardado);
+        timeoutGuardado = setTimeout(() => {
+            indicator.style.display = 'none';
+        }, 2000);
+    }
+    
+    console.log('💾 Cambios guardados automáticamente');
 }
 
 // =============================================
@@ -96,7 +137,6 @@ function actualizarLocal(id, nuevoPedido) {
 const formulario = document.getElementById('formulario');
 const ticket = document.getElementById('ticket');
 const btnImprimirTicket = document.getElementById('btnImprimirTicket');
-const btnGuardarPedido = document.getElementById('btnGuardarPedido');
 
 const tNombre = document.getElementById('tNombre');
 const tDni = document.getElementById('tDni');
@@ -116,6 +156,7 @@ const pedidoInput = document.getElementById('pedido');
 // =============================================
 
 function mostrarTicket(datos) {
+    datosActuales = datos;
     console.log('📋 Mostrando ticket ID:', datos.id);
     
     tNombre.textContent = datos.nombre || 'No especificado';
@@ -131,11 +172,36 @@ function mostrarTicket(datos) {
     ticket.classList.remove('oculto');
     ticket.classList.add('visible');
     btnImprimirTicket.style.display = 'block';
-    btnGuardarPedido.style.display = 'block';
+    
+    // Configurar eventos para guardado automático
+    configurarAutoSave();
     
     setTimeout(() => {
         ticket.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
+}
+
+// =============================================
+// CONFIGURAR GUARDADO AUTOMÁTICO
+// =============================================
+
+function configurarAutoSave() {
+    const camposEditables = [tNombre, tDni, tCelular, tAgencia, tPedido];
+    
+    camposEditables.forEach(campo => {
+        // Guardar al perder el foco (cuando el usuario termina de editar)
+        campo.addEventListener('blur', function() {
+            guardarCambiosAutomatico();
+        });
+        
+        // Guardar mientras escribe (con debounce)
+        campo.addEventListener('input', function() {
+            clearTimeout(timeoutGuardado);
+            timeoutGuardado = setTimeout(() => {
+                guardarCambiosAutomatico();
+            }, 500); // Espera 0.5 segundos después de dejar de escribir
+        });
+    });
 }
 
 // =============================================
@@ -158,7 +224,6 @@ formulario.addEventListener('submit', function(e) {
     if (!pedido) { alert('Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
     if (celular.length < 9) { alert('El celular debe tener 9 digitos'); celularInput.focus(); return; }
 
-    // Generar ID único basado en timestamp
     const id = Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
 
     const datos = {
@@ -176,7 +241,6 @@ formulario.addEventListener('submit', function(e) {
     const datosEncoded = codificarDatos(datos);
     const urlTicket = window.location.origin + window.location.pathname + '?data=' + datosEncoded;
 
-    // MENSAJE WHATSAPP SIN EMOJIS
     const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket);
     abrirWhatsApp(mensajeWhatsApp);
 
@@ -184,7 +248,7 @@ formulario.addEventListener('submit', function(e) {
 });
 
 // =============================================
-// CONSTRUIR MENSAJE WHATSAPP (SIN EMOJIS)
+// CONSTRUIR MENSAJE WHATSAPP
 // =============================================
 
 function construirMensajeWhatsApp(datos, urlTicket) {
@@ -223,54 +287,15 @@ function abrirWhatsApp(mensaje) {
 }
 
 // =============================================
-// GUARDAR CAMBIOS DEL PEDIDO (CON VALIDACIÓN)
-// =============================================
-
-btnGuardarPedido.addEventListener('click', function() {
-    const params = new URLSearchParams(window.location.search);
-    const dataEncoded = params.get('data');
-    
-    if (!dataEncoded) {
-        alert('No se encontraron datos');
-        return;
-    }
-    
-    const datos = decodificarDatos(dataEncoded);
-    if (!datos) {
-        alert('Error al decodificar los datos');
-        return;
-    }
-    
-    const nuevoPedido = tPedido.textContent.trim();
-    if (!nuevoPedido) {
-        alert('El pedido no puede estar vacio');
-        return;
-    }
-    
-    // Verificar si los datos son consistentes
-    const idActual = datos.id;
-    const idMostrado = document.querySelector('.ticket-id')?.textContent || '';
-    
-    datos.pedido = nuevoPedido;
-    datos.fecha_edicion = new Date().toISOString();
-    
-    guardarLocal(datos);
-    
-    const nuevosDatosEncoded = codificarDatos(datos);
-    const nuevaUrl = window.location.origin + window.location.pathname + '?data=' + nuevosDatosEncoded;
-    
-    // Actualizar la URL sin recargar
-    window.history.replaceState({}, '', nuevaUrl);
-    
-    alert('✅ Pedido actualizado correctamente');
-});
-
-// =============================================
 // IMPRIMIR TICKET
 // =============================================
 
 btnImprimirTicket.addEventListener('click', function() {
-    window.print();
+    // Guardar cambios antes de imprimir
+    guardarCambiosAutomatico();
+    setTimeout(() => {
+        window.print();
+    }, 200);
 });
 
 // =============================================
@@ -294,7 +319,7 @@ nombreInput.addEventListener('blur', function() {
 });
 
 // =============================================
-// CARGAR DATOS DESDE URL (CON VALIDACIÓN)
+// CARGAR DATOS DESDE URL
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -313,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Logo fallback
     const logoImg = document.getElementById('logoImg');
     if (logoImg) {
         logoImg.onerror = function() {
@@ -328,15 +352,14 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // Eliminar parámetros de limpieza de la URL para mantenerla limpia
     if (window.location.search.includes('_clean=true') || window.location.search.includes('_t=')) {
+        const dataParam = new URLSearchParams(window.location.search).get('data');
         const newUrl = window.location.origin + window.location.pathname + 
-                       (window.location.search.includes('data=') ? 
-                        '?data=' + new URLSearchParams(window.location.search).get('data') : '');
+                       (dataParam ? '?data=' + dataParam : '');
         if (newUrl !== window.location.href) {
             window.history.replaceState({}, '', newUrl);
         }
     }
     
-    console.log('✅ Sistema v6 listo');
+    console.log('✅ Sistema v7 listo - Todos los campos editables');
 });
