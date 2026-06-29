@@ -1,353 +1,287 @@
-/* =============================================
-   ESTILOS GENERALES
-   ============================================= */
+/* ===========================================
+   RESET
+=========================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #1a1a1a;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+body{
+
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+
+    background:#181818;
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:30px;
+
 }
 
-/* =============================================
-   CONTENEDOR PRINCIPAL
-   ============================================= */
+/* ===========================================
+   CONTENEDOR
+=========================================== */
 
-.contenedor {
-    background: #ffffff;
-    max-width: 600px;
-    width: 100%;
-    padding: 40px 35px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-    border: 2px solid #f9c80e;
-    transition: all 0.3s ease;
+.contenedor{
+
+    width:100%;
+
+    max-width:650px;
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    border:3px solid #f9c80e;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.45);
+
 }
 
-/* =============================================
+/* ===========================================
    LOGO
-   ============================================= */
+=========================================== */
 
-.logo {
-    text-align: center;
-    margin-bottom: 20px;
+.logo{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
 }
 
-.logo img {
-    max-width: 180px;
-    height: auto;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+.logo img{
+
+    width:190px;
+
+    max-width:100%;
+
 }
 
-/* =============================================
-   TÍTULOS
-   ============================================= */
+/* ===========================================
+   TITULOS
+=========================================== */
 
-h1 {
-    color: #1a1a1a;
-    font-size: 28px;
-    font-weight: 800;
-    text-align: center;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-    text-transform: uppercase;
+h1{
+
+    text-align:center;
+
+    font-size:30px;
+
+    color:#222;
+
+    margin-bottom:10px;
+
+    font-weight:900;
+
 }
 
-.descripcion {
-    color: #555;
-    font-size: 15px;
-    text-align: center;
-    margin-bottom: 30px;
-    line-height: 1.5;
+.descripcion{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:35px;
+
+    line-height:1.6;
+
 }
 
-/* =============================================
-   CAMPOS DEL FORMULARIO
-   ============================================= */
+/* ===========================================
+   CAMPOS
+=========================================== */
 
-.campo {
-    margin-bottom: 22px;
+.campo{
+
+    margin-bottom:22px;
+
 }
 
-.campo label {
-    display: block;
-    font-weight: 700;
-    color: #1a1a1a;
-    font-size: 15px;
-    margin-bottom: 6px;
-    letter-spacing: 0.3px;
-}
+.campo label{
 
-.campo label::after {
-    content: " *";
-    color: #d32f2f;
-    font-weight: 800;
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:700;
+
+    color:#222;
+
 }
 
 .campo input,
-.campo textarea {
-    width: 100%;
-    padding: 14px 16px;
-    font-size: 15px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    background: #fafafa;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    color: #1a1a1a;
+.campo textarea{
+
+    width:100%;
+
+    border:2px solid #ddd;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    font-size:15px;
+
+    transition:.25s;
+
+    resize:vertical;
+
+    background:#fafafa;
+
+}
+
+.campo textarea{
+
+    min-height:120px;
+
 }
 
 .campo input:focus,
-.campo textarea:focus {
-    border-color: #f9c80e;
-    background: #ffffff;
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(249, 200, 14, 0.2);
+.campo textarea:focus{
+
+    outline:none;
+
+    border-color:#f9c80e;
+
+    background:#fff;
+
+    box-shadow:0 0 0 4px rgba(249,200,14,.18);
+
 }
 
-.campo textarea {
-    resize: vertical;
-    min-height: 80px;
-    line-height: 1.6;
+/* ===========================================
+   PEDIDO
+=========================================== */
+
+textarea:disabled{
+
+    background:#efefef;
+
+    color:#777;
+
+    cursor:not-allowed;
+
 }
 
-/* =============================================
-   BOTÓN ENVIAR
-   ============================================= */
+/* ===========================================
+   BOTON
+=========================================== */
 
-.btn-enviar {
-    width: 100%;
-    padding: 16px;
-    background: #f9c80e;
-    color: #1a1a1a;
-    border: none;
-    border-radius: 12px;
-    font-size: 20px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 0 #b38f0a;
-    margin-top: 10px;
+.btn-enviar{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#f9c80e;
+
+    color:#111;
+
+    font-size:20px;
+
+    font-weight:900;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    box-shadow:0 6px #c59c00;
+
 }
 
-.btn-enviar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 0 #b38f0a;
-    background: #ffd633;
+.btn-enviar:hover{
+
+    transform:translateY(-2px);
+
+    background:#ffd739;
+
 }
 
-.btn-enviar:active {
-    transform: translateY(4px);
-    box-shadow: 0 2px 0 #b38f0a;
+.btn-enviar:active{
+
+    transform:translateY(4px);
+
+    box-shadow:0 2px #c59c00;
+
 }
 
-/* =============================================
-   TICKET (oculto inicialmente)
-   ============================================= */
+/* ===========================================
+   RESPONSIVE
+=========================================== */
 
-.ticket {
-    display: none;
-    background: #ffffff;
-    max-width: 600px;
-    width: 100%;
-    padding: 40px 35px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-    border: 3px solid #f9c80e;
-    margin-top: 30px;
-    transition: all 0.3s ease;
+@media(max-width:650px){
+
+.contenedor{
+
+    padding:25px;
+
 }
 
-.ticket.visible {
-    display: block;
-    animation: fadeIn 0.5s ease;
+.logo img{
+
+    width:150px;
+
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+h1{
+
+    font-size:24px;
+
 }
 
-.ticket h2 {
-    font-size: 32px;
-    font-weight: 900;
-    text-align: center;
-    color: #1a1a1a;
-    letter-spacing: 4px;
-    margin-bottom: 8px;
+.btn-enviar{
+
+    font-size:17px;
+
 }
 
-.ticket hr {
-    border: none;
-    border-top: 3px dashed #1a1a1a;
-    margin: 20px 0;
 }
 
-.ticket h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* ===========================================
+   ANIMACION
+=========================================== */
+
+.contenedor{
+
+    animation:entrada .5s ease;
+
 }
 
-.ticket p {
-    font-size: 16px;
-    color: #1a1a1a;
-    margin-bottom: 6px;
-    line-height: 1.6;
+@keyframes entrada{
+
+from{
+
+opacity:0;
+
+transform:translateY(30px);
+
 }
 
-.ticket p strong {
-    font-weight: 700;
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
 }
 
-.ticket .remitente {
-    border-left: 4px solid #f9c80e;
-    padding-left: 12px;
-}
-
-/* =============================================
-   BOTÓN IMPRIMIR
-   ============================================= */
-
-#btnImprimir {
-    width: 100%;
-    padding: 14px;
-    background: #1a1a1a;
-    color: #f9c80e;
-    border: 2px solid #f9c80e;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-}
-
-#btnImprimir:hover {
-    background: #f9c80e;
-    color: #1a1a1a;
-    transform: scale(1.02);
-}
-
-/* =============================================
-   ESTADO DEL FORMULARIO (oculto después de enviar)
-   ============================================= */
-
-.oculto {
-    display: none !important;
-}
-
-/* =============================================
-   RESPONSIVE PARA CELULARES
-   ============================================= */
-
-@media (max-width: 480px) {
-    .contenedor {
-        padding: 25px 18px;
-    }
-
-    .ticket {
-        padding: 25px 18px;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
-
-    .campo input,
-    .campo textarea {
-        padding: 12px 14px;
-        font-size: 14px;
-    }
-
-    .btn-enviar {
-        font-size: 17px;
-        padding: 14px;
-    }
-
-    .ticket h2 {
-        font-size: 26px;
-    }
-
-    .ticket p {
-        font-size: 14px;
-    }
-}
-
-/* =============================================
-   ESTILOS PARA IMPRESIÓN (solo ticket)
-   ============================================= */
-
-@media print {
-    body {
-        background: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        min-height: auto !important;
-        display: block !important;
-    }
-
-    .contenedor,
-    .btn-enviar,
-    .descripcion,
-    .logo,
-    #btnImprimir,
-    .ticket hr:last-of-type {
-        display: none !important;
-    }
-
-    .ticket {
-        display: block !important;
-        box-shadow: none !important;
-        border: 2px solid #1a1a1a !important;
-        border-radius: 0 !important;
-        padding: 30px !important;
-        margin: 0 auto !important;
-        max-width: 100% !important;
-        animation: none !important;
-    }
-
-    .ticket.visible {
-        display: block !important;
-    }
-
-    .ticket p {
-        font-size: 13px !important;
-        margin-bottom: 4px !important;
-    }
-
-    .ticket h3 {
-        font-size: 14px !important;
-        margin-bottom: 6px !important;
-    }
-
-    .ticket h2 {
-        font-size: 24px !important;
-    }
-
-    .ticket hr {
-        margin: 12px 0 !important;
-    }
 }
