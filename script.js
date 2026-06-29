@@ -1,41 +1,82 @@
 // =============================================
-// CONFIGURACIÓN - DATOS DE LA EMPRESA
+// CONFIGURACIÓN
 // =============================================
 
 const CONFIG = {
-    // Número de WhatsApp de la empresa (solo 9 dígitos, sin código de país)
-    whatsapp: "907008110", // <-- AHORA SON 9 DÍGITOS
-    
-    // Datos del remitente (aparecen en el ticket)
+    whatsapp: "907008110",
     remitente: {
         nombre: "Alexander Vásquez",
         empresa: "MULTITOOLS",
         ruc: "2060XXXXXXXX",
         celular: "907008110"
-    }
+    },
+    // URL base para los links (cambia por tu dominio)
+    baseUrl: window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/')
 };
 
 // =============================================
-// REFERENCIAS DEL DOM
+// GENERAR ID ÚNICO
+// =============================================
+
+function generarId() {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return timestamp + random;
+}
+
+// =============================================
+// GUARDAR/OBTENER DATOS EN localStorage
+// =============================================
+
+function guardarDatos(id, datos) {
+    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
+    registros[id] = {
+        ...datos,
+        fecha: new Date().toISOString(),
+        pedido: datos.pedido || ''
+    };
+    localStorage.setItem('multitools_registros', JSON.stringify(registros));
+    return registros[id];
+}
+
+function obtenerDatos(id) {
+    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
+    return registros[id] || null;
+}
+
+function actualizarPedido(id, nuevoPedido) {
+    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
+    if (registros[id]) {
+        registros[id].pedido = nuevoPedido;
+        localStorage.setItem('multitools_registros', JSON.stringify(registros));
+        return true;
+    }
+    return false;
+}
+
+// =============================================
+// REFERENCIAS DOM
 // =============================================
 
 const formulario = document.getElementById('formulario');
 const ticket = document.getElementById('ticket');
-const btnImprimir = document.getElementById('btnImprimir');
+const btnImprimirTicket = document.getElementById('btnImprimirTicket');
+const btnGuardarPedido = document.getElementById('btnGuardarPedido');
 
-// Elementos del ticket
 const tNombre = document.getElementById('tNombre');
 const tDni = document.getElementById('tDni');
 const tCelular = document.getElementById('tCelular');
 const tAgencia = document.getElementById('tAgencia');
-const tObservaciones = document.getElementById('tObservaciones');
+const tPedido = document.getElementById('tPedido');
+const tFechaHora = document.getElementById('tFechaHora');
+const ticketId = document.getElementById('ticketId');
+const ticketLink = document.getElementById('ticketLink');
 
-// Campos del formulario
 const nombreInput = document.getElementById('nombre');
 const dniInput = document.getElementById('dni');
 const celularInput = document.getElementById('celular');
 const agenciaInput = document.getElementById('agencia');
-const observacionesInput = document.getElementById('observaciones');
+const pedidoInput = document.getElementById('pedido');
 
 // =============================================
 // FUNCIÓN: ENVIAR FORMULARIO
@@ -44,186 +85,212 @@ const observacionesInput = document.getElementById('observaciones');
 formulario.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // 1. Obtener valores
+    // Obtener valores
     const nombre = nombreInput.value.trim();
     const dni = dniInput.value.trim();
     const celular = celularInput.value.trim();
     const agencia = agenciaInput.value.trim();
-    const observaciones = observacionesInput.value.trim();
+    const pedido = pedidoInput.value.trim();
 
-    // 2. Validar
-    if (!nombre) {
-        alert('⚠️ Ingrese su Nombre Completo');
-        nombreInput.focus();
-        return;
-    }
-    if (!dni) {
-        alert('⚠️ Ingrese su DNI / CE');
-        dniInput.focus();
-        return;
-    }
-    if (!celular) {
-        alert('⚠️ Ingrese su número de Celular');
-        celularInput.focus();
-        return;
-    }
-    if (!agencia) {
-        alert('⚠️ Ingrese la Dirección de la Agencia');
-        agenciaInput.focus();
-        return;
-    }
-    if (celular.length < 9) {
-        alert('⚠️ El celular debe tener 9 dígitos');
-        celularInput.focus();
-        return;
-    }
+    // Validar
+    if (!nombre) { alert('⚠️ Ingrese su Nombre Completo'); nombreInput.focus(); return; }
+    if (!dni) { alert('⚠️ Ingrese su DNI / CE'); dniInput.focus(); return; }
+    if (!celular) { alert('⚠️ Ingrese su número de Celular'); celularInput.focus(); return; }
+    if (!agencia) { alert('⚠️ Ingrese la Dirección de la Agencia'); agenciaInput.focus(); return; }
+    if (!pedido) { alert('⚠️ Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
+    if (celular.length < 9) { alert('⚠️ El celular debe tener 9 dígitos'); celularInput.focus(); return; }
 
-    // 3. Construir mensaje WhatsApp
-    const mensajeWhatsApp = construirMensajeWhatsApp({
+    // Generar ID único
+    const id = generarId();
+
+    // Guardar datos
+    const datos = {
         nombre,
         dni,
         celular,
         agencia,
-        observaciones
-    });
+        pedido
+    };
+    guardarDatos(id, datos);
 
-    // 4. Abrir WhatsApp CON EL NÚMERO CORRECTO
+    // Construir URL del ticket
+    const urlTicket = `${window.location.origin}${window.location.pathname}?id=${id}`;
+
+    // Construir mensaje WhatsApp con link
+    const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
+
+    // Abrir WhatsApp
     abrirWhatsApp(mensajeWhatsApp);
 
-    // 5. Mostrar ticket
-    mostrarTicket({
-        nombre,
-        dni,
-        celular,
-        agencia,
-        observaciones
-    });
+    // Mostrar ticket
+    mostrarTicket(datos, id, urlTicket);
 
-    // 6. Ocultar formulario
-    document.querySelector('.contenedor').style.display = 'none';
+    // Ocultar formulario
+    document.getElementById('formularioContainer').style.display = 'none';
+    btnImprimirTicket.style.display = 'block';
 });
 
 // =============================================
-// FUNCIÓN: CONSTRUIR MENSAJE WHATSAPP
+// CONSTRUIR MENSAJE WHATSAPP CON LINK
 // =============================================
 
-function construirMensajeWhatsApp(datos) {
+function construirMensajeWhatsApp(datos, urlTicket, id) {
     let mensaje = '📦 *NUEVO REGISTRO DE ENVÍO*%0A%0A';
-    mensaje += '👤 *Nombre Completo:*%0A';
+    mensaje += `🆔 *ID:* ${id}%0A%0A`;
+    mensaje += '👤 *Nombre:*%0A';
     mensaje += `${datos.nombre}%0A%0A`;
     mensaje += '🆔 *DNI / CE:*%0A';
     mensaje += `${datos.dni}%0A%0A`;
     mensaje += '📱 *Celular:*%0A';
     mensaje += `${datos.celular}%0A%0A`;
-    mensaje += '🚚 *Dirección Agencia Shalom:*%0A';
+    mensaje += '🚚 *Dirección Agencia:*%0A';
     mensaje += `${datos.agencia}%0A%0A`;
-    if (datos.observaciones) {
-        mensaje += '📝 *Observaciones:*%0A';
-        mensaje += `${datos.observaciones}%0A%0A`;
-    }
+    mensaje += '📝 *PEDIDO:*%0A';
+    mensaje += `${datos.pedido}%0A%0A`;
     mensaje += '─────────────────────%0A';
-    mensaje += '📌 *Registro generado desde la web*%0A';
-    mensaje += `🕐 *Fecha:* ${new Date().toLocaleDateString('es-PE')}%0A`;
-    mensaje += `⏰ *Hora:* ${new Date().toLocaleTimeString('es-PE')}`;
+    mensaje += '🔗 *Link para editar/ver:*%0A';
+    mensaje += `${urlTicket}%0A%0A`;
+    mensaje += '📌 *Registro generado desde la web*';
     return mensaje;
 }
 
 // =============================================
-// FUNCIÓN: ABRIR WHATSAPP - CORREGIDA
+// ABRIR WHATSAPP
 // =============================================
 
 function abrirWhatsApp(mensaje) {
-    // 🔥 NÚMERO CORRECTO: 51 (código Perú) + 907008110 (9 dígitos)
-    const numeroCompleto = `51${CONFIG.whatsapp}`; // 51907008110
+    const numeroCompleto = `51${CONFIG.whatsapp}`;
     const url = `https://wa.me/${numeroCompleto}?text=${mensaje}`;
-    
-    console.log('📱 Abriendo WhatsApp al número:', numeroCompleto);
-    console.log('🔗 URL:', url);
-    
     window.open(url, '_blank');
 }
 
 // =============================================
-// FUNCIÓN: MOSTRAR TICKET
+// MOSTRAR TICKET
 // =============================================
 
-function mostrarTicket(datos) {
+function mostrarTicket(datos, id, urlTicket) {
+    // Llenar datos
+    ticketId.textContent = id;
     tNombre.textContent = `👤 ${datos.nombre}`;
     tDni.textContent = `🆔 ${datos.dni}`;
     tCelular.textContent = `📱 ${datos.celular}`;
     tAgencia.textContent = `🚚 ${datos.agencia}`;
+    tPedido.textContent = datos.pedido || 'Sin pedido';
     
-    if (datos.observaciones) {
-        tObservaciones.textContent = `📝 ${datos.observaciones}`;
-        tObservaciones.style.display = 'block';
-    } else {
-        tObservaciones.style.display = 'none';
-    }
+    // Fecha y hora
+    const ahora = new Date();
+    tFechaHora.textContent = `📅 ${ahora.toLocaleDateString('es-PE')} - ⏰ ${ahora.toLocaleTimeString('es-PE')}`;
     
+    // Link del ticket (para copiar)
+    ticketLink.textContent = `🔗 ${urlTicket}`;
+    ticketLink.style.fontSize = '11px';
+    ticketLink.style.wordBreak = 'break-all';
+    ticketLink.style.color = '#0066cc';
+    ticketLink.style.cursor = 'pointer';
+    ticketLink.onclick = function() {
+        navigator.clipboard.writeText(urlTicket).then(() => {
+            alert('✅ Link copiado al portapapeles');
+        });
+    };
+
+    // Mostrar ticket
+    ticket.classList.remove('oculto');
     ticket.classList.add('visible');
     
+    // Mostrar botón guardar
+    btnGuardarPedido.style.display = 'block';
+    
+    // Scroll al ticket
     setTimeout(() => {
         ticket.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
 }
 
 // =============================================
-// FUNCIÓN: IMPRIMIR
+// GUARDAR CAMBIOS DEL PEDIDO
 // =============================================
 
-btnImprimir.addEventListener('click', function() {
+btnGuardarPedido.addEventListener('click', function() {
+    const id = ticketId.textContent;
+    const nuevoPedido = tPedido.textContent.trim();
+    
+    if (!nuevoPedido) {
+        alert('⚠️ El pedido no puede estar vacío');
+        return;
+    }
+    
+    if (actualizarPedido(id, nuevoPedido)) {
+        alert('✅ Pedido actualizado correctamente');
+        // Actualizar el contenido del ticket
+        tPedido.textContent = nuevoPedido;
+    } else {
+        alert('❌ Error al guardar el pedido');
+    }
+});
+
+// =============================================
+// IMPRIMIR TICKET (tamaño ticket)
+// =============================================
+
+btnImprimirTicket.addEventListener('click', function() {
+    window.print();
+});
+
+// También imprimir con el botón viejo (por compatibilidad)
+document.getElementById('btnImprimir')?.addEventListener('click', function() {
     window.print();
 });
 
 // =============================================
-// FUNCIÓN: FORMATEAR CELULAR
+// FORMATOS DE CAMPOS
 // =============================================
 
 celularInput.addEventListener('input', function() {
     this.value = this.value.replace(/\D/g, '');
-    if (this.value.length > 9) {
-        this.value = this.value.slice(0, 9);
-    }
+    if (this.value.length > 9) this.value = this.value.slice(0, 9);
 });
 
 dniInput.addEventListener('input', function() {
     this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
-    if (this.value.length > 15) {
-        this.value = this.value.slice(0, 15);
-    }
+    if (this.value.length > 15) this.value = this.value.slice(0, 15);
 });
 
 nombreInput.addEventListener('blur', function() {
-    this.value = this.value
-        .toLowerCase()
-        .split(' ')
+    this.value = this.value.toLowerCase().split(' ')
         .map(p => p.charAt(0).toUpperCase() + p.slice(1))
         .join(' ');
 });
 
 // =============================================
-// FUNCIÓN: AGREGAR FECHA AL TICKET
+// CARGAR DATOS POR ID (si existe en URL)
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    const fechaHora = document.createElement('p');
-    fechaHora.style.textAlign = 'center';
-    fechaHora.style.marginTop = '10px';
-    fechaHora.style.fontSize = '14px';
-    fechaHora.style.color = '#555';
-    fechaHora.innerHTML = `📅 ${new Date().toLocaleDateString('es-PE')} - ⏰ ${new Date().toLocaleTimeString('es-PE')}`;
+    // Obtener ID de la URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
     
-    const btnImprimir = document.getElementById('btnImprimir');
-    const ticket = document.getElementById('ticket');
-    ticket.insertBefore(fechaHora, btnImprimir);
+    if (id) {
+        const datos = obtenerDatos(id);
+        if (datos) {
+            console.log('📋 Cargando registro:', id);
+            // Ocultar formulario
+            document.getElementById('formularioContainer').style.display = 'none';
+            btnImprimirTicket.style.display = 'block';
+            
+            // Mostrar ticket con datos guardados
+            mostrarTicket(datos, id, window.location.href);
+            
+            // Poner el pedido en editable
+            tPedido.textContent = datos.pedido || 'Sin pedido';
+        } else {
+            console.warn('⚠️ Registro no encontrado:', id);
+            alert('❌ Registro no encontrado');
+        }
+    }
     
-    console.log('✅ Sistema listo');
-    console.log('📱 Número WhatsApp configurado:', CONFIG.whatsapp);
-});
-
-// Manejador de error de logo
-document.addEventListener('DOMContentLoaded', function() {
-    const logoImg = document.querySelector('.logo img');
+    // Logo fallback
+    const logoImg = document.getElementById('logoImg');
     if (logoImg) {
         logoImg.onerror = function() {
             this.style.display = 'none';
@@ -236,4 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.parentNode.appendChild(fallback);
         };
     }
+    
+    console.log('✅ Sistema listo');
+    console.log('📱 Número WhatsApp:', CONFIG.whatsapp);
 });
