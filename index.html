@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Cliente | MULTITOOLS</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- CARGAR CON VERSIÓN PARA EVITAR CACHÉ -->
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
-<!-- BOTÓN IMPRIMIR FLOTANTE -->
+<!-- BOTÓN IMPRIMIR -->
 <button id="btnImprimirTicket" class="btn-imprimir-flotante" style="display:none;">
     🖨️ IMPRIMIR TICKET
 </button>
 
 <!-- ============ FORMULARIO ============ -->
 <div class="contenedor" id="formularioContainer">
-    
-    <!-- LOGO -->
     <div class="logo">
         <img src="logo.png" alt="MULTITOOLS" id="logoImg">
     </div>
@@ -54,17 +54,14 @@
     </form>
 </div>
 
-<!-- ============ TICKET (SIN ID) ============ -->
+<!-- ============ TICKET ============ -->
 <div id="ticket" class="ticket oculto">
-    
-    <!-- LOGO -->
     <div class="ticket-logo">
         <img src="logo.png" alt="MULTITOOLS">
     </div>
 
     <hr class="ticket-line">
 
-    <!-- DATOS DEL CLIENTE -->
     <div class="ticket-cliente">
         <p><span class="label">NOMBRE</span><br><span id="tNombre" class="valor"></span></p>
         <p><span class="label">DNI</span><br><span id="tDni" class="valor"></span></p>
@@ -74,7 +71,6 @@
 
     <hr class="ticket-line">
 
-    <!-- PEDIDO -->
     <div class="ticket-pedido">
         <div class="label">PEDIDO</div>
         <div id="tPedido" class="pedido-content" contenteditable="true"></div>
@@ -82,7 +78,6 @@
 
     <hr class="ticket-line">
 
-    <!-- REMITE -->
     <div class="ticket-remite">
         <p><span class="label">REMITE</span><br><span class="valor">Alexander Vásquez</span></p>
         <p><span class="valor">MULTITOOLS</span></p>
@@ -92,15 +87,15 @@
 
     <hr class="ticket-line">
 
-    <!-- FECHA -->
     <div class="ticket-fecha" id="tFechaHora"></div>
 
-    <!-- BOTÓN GUARDAR -->
     <button id="btnGuardarPedido" class="btn-guardar" style="display:none;">
         💾 GUARDAR
     </button>
 </div>
 
-<script src="script.js"></script>
+<!-- CARGAR SCRIPT CON VERSIÓN -->
+<script src="script.js?v=3"></script>
+
 </body>
 </html>
