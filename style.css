@@ -174,7 +174,7 @@ h1 {
 }
 
 /* =============================================
-   HEADER: Logo a la derecha (MAS GRANDE)
+   HEADER: Logo a la derecha
    ============================================= */
 
 .ticket-header {
@@ -208,6 +208,20 @@ h1 {
     color: #1a1a1a;
     display: block;
     line-height: 1.2;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+    cursor: text;
+}
+
+.ticket-datos-header .valor:hover {
+    background: #f0f0f0;
+}
+
+.ticket-datos-header .valor:focus {
+    background: #fffbe6;
+    outline: 2px solid #f9c80e;
+    outline-offset: 1px;
 }
 
 .ticket-logo-derecha {
@@ -264,12 +278,28 @@ h1 {
     white-space: pre-wrap;
     word-wrap: break-word;
     color: #1a1a1a;
+    transition: all 0.3s ease;
+    cursor: text;
+}
+
+.pedido-content:hover {
+    background: #f0f0f0;
 }
 
 .pedido-content:focus {
     border-color: #f9c80e;
     outline: none;
-    background: #fff;
+    background: #fffbe6;
+    box-shadow: 0 0 0 3px rgba(249, 200, 14, 0.15);
+}
+
+.editable-hint {
+    display: block;
+    text-align: center;
+    font-size: 9px;
+    color: #aaa;
+    margin-top: 3px;
+    font-weight: normal;
 }
 
 /* =============================================
@@ -307,32 +337,6 @@ h1 {
     font-size: 11px;
     color: #777;
     margin: 3px 0;
-}
-
-/* =============================================
-   BOTONES
-   ============================================= */
-
-.btn-guardar {
-    width: 100%;
-    padding: 10px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    margin-top: 6px;
-    transition: all 0.3s ease;
-}
-
-.btn-guardar:hover {
-    background: #218838;
-}
-
-.oculto {
-    display: none !important;
 }
 
 /* =============================================
@@ -382,7 +386,9 @@ h1 {
     .descripcion,
     .logo,
     .btn-imprimir-flotante,
-    #btnGuardarPedido {
+    #btnGuardarPedido,
+    .editable-hint,
+    #autoSaveIndicator {
         display: none !important;
     }
 
@@ -418,6 +424,9 @@ h1 {
     .ticket-datos-header .valor {
         font-size: 18px !important;
         line-height: 1.1 !important;
+        background: transparent !important;
+        outline: none !important;
+        border: none !important;
     }
 
     .ticket-logo-derecha img {
@@ -440,6 +449,7 @@ h1 {
         min-height: 28px !important;
         border: 1px solid #ccc !important;
         background: white !important;
+        outline: none !important;
     }
 
     .ticket-remite .valor {
