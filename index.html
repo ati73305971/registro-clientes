@@ -8,6 +8,7 @@
 </head>
 <body>
 
+<!-- BOTÓN IMPRIMIR FLOTANTE -->
 <button id="btnImprimirTicket" class="btn-imprimir-flotante" style="display:none;">
     🖨️ IMPRIMIR TICKET
 </button>
@@ -38,7 +39,7 @@
 
         <div class="campo">
             <label>Dirección Agencia Shalom *</label>
-            <textarea id="agencia" rows="4" placeholder="Ejemplo: Agencia Shalom Av. Nicolás Arriola 1500 La Victoria Lima" required></textarea>
+            <textarea id="agencia" rows="3" placeholder="Ejemplo: Agencia Shalom Av. Nicolás Arriola 1500 La Victoria Lima" required></textarea>
         </div>
 
         <div class="campo">
@@ -50,46 +51,53 @@
     </form>
 </div>
 
-<!-- TICKET -->
+<!-- ============ TICKET (Optimizado para mini impresora) ============ -->
 <div id="ticket" class="ticket oculto">
-    <div class="ticket-header">
-        <h2>MULTITOOLS</h2>
-        <div class="ticket-id">#<span id="ticketId">000000</span></div>
+    
+    <!-- LOGO -->
+    <div class="ticket-logo">
+        <img src="logo.png" alt="MULTITOOLS">
     </div>
-    <hr>
 
-    <div class="ticket-section">
-        <h3>REMITE</h3>
-        <p><strong>Alexander Vásquez</strong></p>
-        <p>MULTITOOLS</p>
-        <p>RUC: 2060XXXXXXXX</p>
-        <p>Cel: 907008110</p>
+    <!-- ID -->
+    <div class="ticket-id">#<span id="ticketId">000000</span></div>
+
+    <hr class="ticket-line">
+
+    <!-- DATOS DEL CLIENTE -->
+    <div class="ticket-cliente">
+        <p><span class="label">NOMBRE</span><br><span id="tNombre" class="valor"></span></p>
+        <p><span class="label">DNI</span><br><span id="tDni" class="valor"></span></p>
+        <p><span class="label">CELULAR</span><br><span id="tCelular" class="valor"></span></p>
+        <p><span class="label">AGENCIA</span><br><span id="tAgencia" class="valor"></span></p>
     </div>
-    <hr>
 
-    <div class="ticket-section">
-        <h3>DESTINATARIO</h3>
-        <p id="tNombre"></p>
-        <p id="tDni"></p>
-        <p id="tCelular"></p>
-        <p id="tAgencia"></p>
-    </div>
-    <hr>
+    <hr class="ticket-line">
 
-    <div class="ticket-section">
-        <h3>PEDIDO</h3>
+    <!-- PEDIDO -->
+    <div class="ticket-pedido">
+        <div class="label">PEDIDO</div>
         <div id="tPedido" class="pedido-content" contenteditable="true"></div>
-        <small class="editable-hint">✏️ Haz clic para editar el pedido</small>
-    </div>
-    <hr>
-
-    <div class="ticket-footer">
-        <p id="tFechaHora"></p>
-        <p class="ticket-link" id="ticketLink"></p>
     </div>
 
+    <hr class="ticket-line">
+
+    <!-- REMITE -->
+    <div class="ticket-remite">
+        <p><span class="label">REMITE</span><br><span class="valor">Alexander Vásquez</span></p>
+        <p><span class="valor">MULTITOOLS</span></p>
+        <p><span class="valor">RUC: 2060XXXXXXXX</span></p>
+        <p><span class="valor">Cel: 907008110</span></p>
+    </div>
+
+    <hr class="ticket-line">
+
+    <!-- FECHA -->
+    <div class="ticket-fecha" id="tFechaHora"></div>
+
+    <!-- BOTONES -->
     <button id="btnGuardarPedido" class="btn-guardar" style="display:none;">
-        💾 GUARDAR CAMBIOS
+        💾 GUARDAR
     </button>
 </div>
 
