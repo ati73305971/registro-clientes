@@ -1,19 +1,16 @@
 // =============================================
-// CONTROL DE VERSIÓN - EVITA CACHÉ
+// CONTROL DE VERSIÓN
 // =============================================
 
-const VERSION = '3.0';
+const VERSION = '4.0';
 const versionGuardada = localStorage.getItem('multitools_version');
 
 if (versionGuardada !== VERSION) {
-    console.log('🔄 Nueva versión detectada (v' + VERSION + ') - Limpiando caché...');
+    console.log('🔄 Nueva versión detectada (v' + VERSION + ')');
     localStorage.setItem('multitools_version', VERSION);
-    
-    // Si la URL no tiene un parámetro de versión, forzar recarga
     if (!window.location.search.includes('v=')) {
         const separator = window.location.search ? '&' : '?';
         window.location.href = window.location.href + separator + 'v=' + VERSION;
-        // Nota: el código se detiene aquí y recarga la página
     }
 }
 
@@ -31,10 +28,10 @@ const CONFIG = {
     }
 };
 
-console.log('✅ Sistema v' + VERSION + ' cargado correctamente');
+console.log('✅ Sistema v' + VERSION + ' cargado');
 
 // =============================================
-// FUNCIONES DE CODIFICACIÓN/DECODIFICACIÓN
+// FUNCIONES DE CODIFICACIÓN
 // =============================================
 
 function codificarDatos(datos) {
@@ -105,7 +102,7 @@ const pedidoInput = document.getElementById('pedido');
 // =============================================
 
 function mostrarTicket(datos) {
-    console.log('📋 Mostrando ticket con datos:', datos);
+    console.log('📋 Mostrando ticket:', datos);
     
     tNombre.textContent = datos.nombre || 'No especificado';
     tDni.textContent = datos.dni || 'No especificado';
@@ -164,33 +161,39 @@ formulario.addEventListener('submit', function(e) {
     const datosEncoded = codificarDatos(datos);
     const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
 
-    const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
+    // 📌 MENSAJE WHATSAPP MEJORADO (sin ID, sin emojis raros)
+    const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket);
     abrirWhatsApp(mensajeWhatsApp);
 
     mostrarTicket(datos);
 });
 
 // =============================================
-// CONSTRUIR MENSAJE WHATSAPP
+// CONSTRUIR MENSAJE WHATSAPP (MEJORADO)
 // =============================================
 
-function construirMensajeWhatsApp(datos, urlTicket, id) {
-    let mensaje = '📦 *NUEVO REGISTRO DE ENVÍO*%0A%0A';
-    mensaje += `🆔 *ID:* ${id}%0A%0A`;
-    mensaje += '👤 *Nombre:*%0A';
+function construirMensajeWhatsApp(datos, urlTicket) {
+    let mensaje = '📦 DATOS DE ENVIO%0A%0A';
+    
+    mensaje += '👤 Nombre:%0A';
     mensaje += `${datos.nombre}%0A%0A`;
-    mensaje += '🆔 *DNI / CE:*%0A';
+    
+    mensaje += '🆔 DNI / CE:%0A';
     mensaje += `${datos.dni}%0A%0A`;
-    mensaje += '📱 *Celular:*%0A';
+    
+    mensaje += '📱 Celular:%0A';
     mensaje += `${datos.celular}%0A%0A`;
-    mensaje += '🚚 *Dirección Agencia:*%0A';
+    
+    mensaje += '📍 Direccion Agencia:%0A';
     mensaje += `${datos.agencia}%0A%0A`;
-    mensaje += '📝 *PEDIDO:*%0A';
+    
+    mensaje += '📝 PEDIDO:%0A';
     mensaje += `${datos.pedido}%0A%0A`;
+    
     mensaje += '─────────────────────%0A';
-    mensaje += '🔗 *Link para editar:*%0A';
-    mensaje += `${urlTicket}%0A%0A`;
-    mensaje += '📌 *Registro generado desde la web*';
+    mensaje += '🔗 Link para editar:%0A';
+    mensaje += `${urlTicket}`;
+    
     return mensaje;
 }
 
@@ -213,13 +216,13 @@ btnGuardarPedido.addEventListener('click', function() {
     const dataEncoded = params.get('data');
     
     if (!dataEncoded) {
-        alert('❌ No se encontraron datos para actualizar');
+        alert('❌ No se encontraron datos');
         return;
     }
     
     const datos = decodificarDatos(dataEncoded);
     if (!datos) {
-        alert('❌ Error al decodificar los datos');
+        alert('❌ Error al decodificar');
         return;
     }
     
@@ -239,7 +242,7 @@ btnGuardarPedido.addEventListener('click', function() {
     
     window.history.replaceState({}, '', nuevaUrl);
     
-    alert('✅ Pedido actualizado correctamente');
+    alert('✅ Pedido actualizado');
 });
 
 // =============================================
@@ -271,31 +274,25 @@ nombreInput.addEventListener('blur', function() {
 });
 
 // =============================================
-// CARGAR DATOS DESDE LA URL
+// CARGAR DATOS DESDE URL
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Página cargada - Verificando URL...');
+    console.log('🚀 Cargando página...');
     
     const params = new URLSearchParams(window.location.search);
     const dataEncoded = params.get('data');
     
-    console.log('📦 Data encoded encontrado:', dataEncoded ? 'SÍ' : 'NO');
-    
     if (dataEncoded) {
-        console.log('🔓 Decodificando datos...');
         const datos = decodificarDatos(dataEncoded);
-        
         if (datos) {
-            console.log('✅ Datos decodificados correctamente:', datos);
+            console.log('✅ Datos cargados:', datos);
             mostrarTicket(datos);
         } else {
-            console.error('❌ Error al decodificar los datos');
-            alert('❌ Error al cargar los datos del link');
+            alert('❌ Error al cargar los datos');
         }
     }
     
-    // Logo fallback
     const logoImg = document.getElementById('logoImg');
     if (logoImg) {
         logoImg.onerror = function() {
