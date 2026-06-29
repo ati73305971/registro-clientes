@@ -13,7 +13,7 @@ const CONFIG = {
 };
 
 // =============================================
-// FUNCIONES DE CODIFICACIÓN (para guardar en URL)
+// CODIFICACIÓN PARA URL
 // =============================================
 
 function codificarDatos(datos) {
@@ -35,18 +35,13 @@ function decodificarDatos(dataEncoded) {
 }
 
 // =============================================
-// FUNCIÓN: GUARDAR EN EL NAVEGADOR
+// GUARDAR EN LOCALSTORAGE
 // =============================================
 
 function guardarLocal(datos) {
     const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
     registros[datos.id] = datos;
     localStorage.setItem('multitools_registros', JSON.stringify(registros));
-}
-
-function obtenerLocal(id) {
-    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
-    return registros[id] || null;
 }
 
 function actualizarLocal(id, nuevoPedido) {
@@ -76,7 +71,6 @@ const tAgencia = document.getElementById('tAgencia');
 const tPedido = document.getElementById('tPedido');
 const tFechaHora = document.getElementById('tFechaHora');
 const ticketId = document.getElementById('ticketId');
-const ticketLink = document.getElementById('ticketLink');
 
 const nombreInput = document.getElementById('nombre');
 const dniInput = document.getElementById('dni');
@@ -108,7 +102,6 @@ formulario.addEventListener('submit', function(e) {
     // Generar ID
     const id = Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
 
-    // Datos
     const datos = {
         id: id,
         nombre: nombre,
@@ -119,23 +112,16 @@ formulario.addEventListener('submit', function(e) {
         fecha: new Date().toISOString()
     };
 
-    // Guardar en localStorage
     guardarLocal(datos);
 
-    // Codificar para el link
     const datosEncoded = codificarDatos(datos);
     const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
 
-    // Mensaje WhatsApp
+    // Mensaje WhatsApp (con link)
     const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
-
-    // Abrir WhatsApp
     abrirWhatsApp(mensajeWhatsApp);
 
-    // Mostrar ticket
-    mostrarTicket(datos, urlTicket);
-
-    // Ocultar formulario
+    mostrarTicket(datos);
     document.getElementById('formularioContainer').style.display = 'none';
     btnImprimirTicket.style.display = 'block';
 });
@@ -158,7 +144,7 @@ function construirMensajeWhatsApp(datos, urlTicket, id) {
     mensaje += '📝 *PEDIDO:*%0A';
     mensaje += `${datos.pedido}%0A%0A`;
     mensaje += '─────────────────────%0A';
-    mensaje += '🔗 *Link para editar/ver:*%0A';
+    mensaje += '🔗 *Link para editar:*%0A';
     mensaje += `${urlTicket}%0A%0A`;
     mensaje += '📌 *Registro generado desde la web*';
     return mensaje;
@@ -178,27 +164,16 @@ function abrirWhatsApp(mensaje) {
 // MOSTRAR TICKET
 // =============================================
 
-function mostrarTicket(datos, urlTicket) {
+function mostrarTicket(datos) {
     ticketId.textContent = datos.id || '000000';
-    tNombre.textContent = `👤 ${datos.nombre}`;
-    tDni.textContent = `🆔 ${datos.dni}`;
-    tCelular.textContent = `📱 ${datos.celular}`;
-    tAgencia.textContent = `🚚 ${datos.agencia}`;
+    tNombre.textContent = datos.nombre;
+    tDni.textContent = datos.dni;
+    tCelular.textContent = datos.celular;
+    tAgencia.textContent = datos.agencia;
     tPedido.textContent = datos.pedido || 'Sin pedido';
     
     const fecha = datos.fecha ? new Date(datos.fecha) : new Date();
-    tFechaHora.textContent = `📅 ${fecha.toLocaleDateString('es-PE')} - ⏰ ${fecha.toLocaleTimeString('es-PE')}`;
-    
-    ticketLink.textContent = `🔗 ${urlTicket}`;
-    ticketLink.style.fontSize = '11px';
-    ticketLink.style.wordBreak = 'break-all';
-    ticketLink.style.color = '#0066cc';
-    ticketLink.style.cursor = 'pointer';
-    ticketLink.onclick = function() {
-        navigator.clipboard.writeText(urlTicket).then(() => {
-            alert('✅ Link copiado al portapapeles');
-        });
-    };
+    tFechaHora.textContent = `${fecha.toLocaleDateString('es-PE')} ${fecha.toLocaleTimeString('es-PE')}`;
 
     ticket.classList.remove('oculto');
     ticket.classList.add('visible');
@@ -222,19 +197,8 @@ btnGuardarPedido.addEventListener('click', function() {
         return;
     }
     
-    // Actualizar local
     if (actualizarLocal(id, nuevoPedido)) {
-        alert('✅ Pedido actualizado correctamente');
-        
-        // Actualizar datos en el link
-        const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
-        const datosActualizados = registros[id];
-        const datosEncoded = codificarDatos(datosActualizados);
-        const nuevaUrl = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
-        
-        // Actualizar la URL sin recargar
-        window.history.replaceState({}, '', nuevaUrl);
-        ticketLink.textContent = `🔗 ${nuevaUrl}`;
+        alert('✅ Pedido actualizado');
     } else {
         alert('❌ Error al guardar');
     }
@@ -282,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('📋 Cargando registro:', datos.id);
             document.getElementById('formularioContainer').style.display = 'none';
             btnImprimirTicket.style.display = 'block';
-            mostrarTicket(datos, window.location.href);
+            mostrarTicket(datos);
             tPedido.textContent = datos.pedido || 'Sin pedido';
         } else {
             alert('❌ Error al cargar los datos del link');
