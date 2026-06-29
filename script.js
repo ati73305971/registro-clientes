@@ -7,7 +7,7 @@ const CONFIG = {
     remitente: {
         nombre: "Alexander Vásquez",
         empresa: "MULTITOOLS",
-        ruc: "2060XXXXXXXX",
+        ruc: "20611590696",
         celular: "907008110"
     }
 };
@@ -91,7 +91,6 @@ formulario.addEventListener('submit', function(e) {
     const agencia = agenciaInput.value.trim();
     const pedido = pedidoInput.value.trim();
 
-    // Validar
     if (!nombre) { alert('⚠️ Ingrese su Nombre Completo'); nombreInput.focus(); return; }
     if (!dni) { alert('⚠️ Ingrese su DNI / CE'); dniInput.focus(); return; }
     if (!celular) { alert('⚠️ Ingrese su número de Celular'); celularInput.focus(); return; }
@@ -99,8 +98,8 @@ formulario.addEventListener('submit', function(e) {
     if (!pedido) { alert('⚠️ Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
     if (celular.length < 9) { alert('⚠️ El celular debe tener 9 dígitos'); celularInput.focus(); return; }
 
-    // Generar ID
-    const id = Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+    // Generar ID (más corto)
+    const id = Math.random().toString(36).substring(2, 8).toUpperCase();
 
     const datos = {
         id: id,
@@ -117,7 +116,6 @@ formulario.addEventListener('submit', function(e) {
     const datosEncoded = codificarDatos(datos);
     const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
 
-    // Mensaje WhatsApp (con link)
     const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
     abrirWhatsApp(mensajeWhatsApp);
 
@@ -253,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Logo fallback
     const logoImg = document.getElementById('logoImg');
     if (logoImg) {
         logoImg.onerror = function() {
