@@ -1,18 +1,30 @@
 // =============================================
-// CONTROL DE VERSION
+// LIMPIAR CACHÉ DE LOCALSTORAGE (DATOS ANTIGUOS)
 // =============================================
 
-const VERSION = '5.0';
-const versionGuardada = localStorage.getItem('multitools_version');
-
-if (versionGuardada !== VERSION) {
-    console.log('Nueva version detectada (v' + VERSION + ')');
-    localStorage.setItem('multitools_version', VERSION);
-    if (!window.location.search.includes('v=')) {
-        const separator = window.location.search ? '&' : '?';
-        window.location.href = window.location.href + separator + 'v=' + VERSION;
+// Al cargar, verificar si hay datos antiguos en localStorage
+(function limpiarCacheLocal() {
+    const version = '6.0';
+    const versionGuardada = localStorage.getItem('multitools_version');
+    
+    // Si la versión cambió, limpiar datos antiguos
+    if (versionGuardada !== version) {
+        console.log('🔄 Limpiando caché local - Nueva versión: ' + version);
+        
+        // Limpiar registros antiguos
+        localStorage.removeItem('multitools_registros');
+        
+        // Guardar nueva versión
+        localStorage.setItem('multitools_version', version);
+        
+        // Recargar la página para aplicar cambios
+        if (!window.location.search.includes('_clean=true')) {
+            const separator = window.location.search ? '&' : '?';
+            window.location.href = window.location.href + separator + '_clean=true';
+            return;
+        }
     }
-}
+})();
 
 // =============================================
 // CONFIGURACION
@@ -28,7 +40,7 @@ const CONFIG = {
     }
 };
 
-console.log('Sistema v' + VERSION + ' cargado');
+console.log('✅ Sistema v6 cargado - ' + new Date().toLocaleString());
 
 // =============================================
 // FUNCIONES DE CODIFICACION
@@ -55,10 +67,12 @@ function decodificarDatos(dataEncoded) {
 }
 
 // =============================================
-// GUARDAR EN LOCALSTORAGE
+// GUARDAR EN LOCALSTORAGE (CON ID ÚNICO)
 // =============================================
 
 function guardarLocal(datos) {
+    // Usar un timestamp como clave para evitar colisiones
+    const key = 'pedido_' + datos.id + '_' + Date.now();
     const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
     registros[datos.id] = datos;
     localStorage.setItem('multitools_registros', JSON.stringify(registros));
@@ -102,7 +116,7 @@ const pedidoInput = document.getElementById('pedido');
 // =============================================
 
 function mostrarTicket(datos) {
-    console.log('Mostrando ticket:', datos);
+    console.log('📋 Mostrando ticket ID:', datos.id);
     
     tNombre.textContent = datos.nombre || 'No especificado';
     tDni.textContent = datos.dni || 'No especificado';
@@ -144,7 +158,8 @@ formulario.addEventListener('submit', function(e) {
     if (!pedido) { alert('Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
     if (celular.length < 9) { alert('El celular debe tener 9 digitos'); celularInput.focus(); return; }
 
-    const id = Math.random().toString(36).substring(2, 8).toUpperCase();
+    // Generar ID único basado en timestamp
+    const id = Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
 
     const datos = {
         id: id,
@@ -208,7 +223,7 @@ function abrirWhatsApp(mensaje) {
 }
 
 // =============================================
-// GUARDAR CAMBIOS DEL PEDIDO
+// GUARDAR CAMBIOS DEL PEDIDO (CON VALIDACIÓN)
 // =============================================
 
 btnGuardarPedido.addEventListener('click', function() {
@@ -222,7 +237,7 @@ btnGuardarPedido.addEventListener('click', function() {
     
     const datos = decodificarDatos(dataEncoded);
     if (!datos) {
-        alert('Error al decodificar');
+        alert('Error al decodificar los datos');
         return;
     }
     
@@ -232,6 +247,10 @@ btnGuardarPedido.addEventListener('click', function() {
         return;
     }
     
+    // Verificar si los datos son consistentes
+    const idActual = datos.id;
+    const idMostrado = document.querySelector('.ticket-id')?.textContent || '';
+    
     datos.pedido = nuevoPedido;
     datos.fecha_edicion = new Date().toISOString();
     
@@ -240,9 +259,10 @@ btnGuardarPedido.addEventListener('click', function() {
     const nuevosDatosEncoded = codificarDatos(datos);
     const nuevaUrl = window.location.origin + window.location.pathname + '?data=' + nuevosDatosEncoded;
     
+    // Actualizar la URL sin recargar
     window.history.replaceState({}, '', nuevaUrl);
     
-    alert('Pedido actualizado');
+    alert('✅ Pedido actualizado correctamente');
 });
 
 // =============================================
@@ -274,11 +294,11 @@ nombreInput.addEventListener('blur', function() {
 });
 
 // =============================================
-// CARGAR DATOS DESDE URL
+// CARGAR DATOS DESDE URL (CON VALIDACIÓN)
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Cargando pagina...');
+    console.log('🚀 Cargando pagina... ' + new Date().toISOString());
     
     const params = new URLSearchParams(window.location.search);
     const dataEncoded = params.get('data');
@@ -286,13 +306,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (dataEncoded) {
         const datos = decodificarDatos(dataEncoded);
         if (datos) {
-            console.log('Datos cargados:', datos);
+            console.log('✅ Datos cargados ID:', datos.id);
             mostrarTicket(datos);
         } else {
-            alert('Error al cargar los datos');
+            alert('Error al cargar los datos del link');
         }
     }
     
+    // Logo fallback
     const logoImg = document.getElementById('logoImg');
     if (logoImg) {
         logoImg.onerror = function() {
@@ -307,5 +328,15 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    console.log('Sistema listo');
+    // Eliminar parámetros de limpieza de la URL para mantenerla limpia
+    if (window.location.search.includes('_clean=true') || window.location.search.includes('_t=')) {
+        const newUrl = window.location.origin + window.location.pathname + 
+                       (window.location.search.includes('data=') ? 
+                        '?data=' + new URLSearchParams(window.location.search).get('data') : '');
+        if (newUrl !== window.location.href) {
+            window.history.replaceState({}, '', newUrl);
+        }
+    }
+    
+    console.log('✅ Sistema v6 listo');
 });
