@@ -1,140 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Registro de Cliente | MULTITOOLS</title>
-
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
 
-<div class="contenedor">
+<!-- BOTÓN IMPRIMIR (arriba derecha, solo visible en ticket) -->
+<button id="btnImprimirTicket" class="btn-imprimir-flotante" style="display:none;">
+    🖨️ IMPRIMIR TICKET
+</button>
 
+<div class="contenedor" id="formularioContainer">
+    <!-- LOGO -->
     <div class="logo">
-        <img src="logo.png" alt="MULTITOOLS">
+        <img src="logo.png" alt="MULTITOOLS" id="logoImg">
     </div>
 
-    <h1>REGISTRO DE DATOS DE ENVÍO</h1>
-
+    <h1>Registro de Datos de Envío</h1>
     <p class="descripcion">
-
-        Complete correctamente los datos para realizar el despacho de su pedido.
-
+        Complete correctamente sus datos para realizar el despacho de su pedido.
     </p>
 
     <form id="formulario">
-
         <div class="campo">
-
-            <label for="nombre">
-
-                Nombre Completo *
-
-            </label>
-
-            <input
-                id="nombre"
-                type="text"
-                placeholder="Ejemplo: Juan Pérez Gómez"
-                autocomplete="name"
-                required>
-
+            <label>Nombre Completo *</label>
+            <input type="text" id="nombre" placeholder="Ejemplo: Juan Pérez Gómez" required>
         </div>
 
         <div class="campo">
-
-            <label for="dni">
-
-                DNI / CE *
-
-            </label>
-
-            <input
-                id="dni"
-                type="text"
-                placeholder="Ingrese su DNI o CE"
-                autocomplete="off"
-                required>
-
+            <label>DNI / CE *</label>
+            <input type="text" id="dni" placeholder="Ingrese su DNI o CE" required>
         </div>
 
         <div class="campo">
-
-            <label for="celular">
-
-                Número Celular *
-
-            </label>
-
-            <input
-                id="celular"
-                type="tel"
-                placeholder="987654321"
-                autocomplete="tel"
-                required>
-
+            <label>Número Celular *</label>
+            <input type="tel" id="celular" placeholder="987654321" required>
         </div>
 
         <div class="campo">
-
-            <label for="agencia">
-
-                Dirección Agencia Shalom *
-
-            </label>
-
-            <textarea
-                id="agencia"
-                rows="5"
-                placeholder="Ejemplo:
-
-Agencia Shalom
-
-Av. Nicolás Arriola 1500
-
-La Victoria
-
-Lima"
-                required></textarea>
-
+            <label>Dirección Agencia Shalom *</label>
+            <textarea id="agencia" rows="4" placeholder="Ejemplo: Agencia Shalom Av. Nicolás Arriola 1500 La Victoria Lima" required></textarea>
         </div>
 
         <div class="campo">
-
-            <label>
-
-                PEDIDO
-
-            </label>
-
-            <textarea
-                rows="5"
-                disabled
-                placeholder="Este campo será completado por el personal de MULTITOOLS al preparar el pedido."></textarea>
-
+            <label>PEDIDO *</label>
+            <textarea id="pedido" rows="4" placeholder="Detalle del pedido (obligatorio)" required></textarea>
         </div>
 
-        <button
-            class="btn-enviar"
-            type="submit">
-
-            ENVIAR DATOS
-
+        <button type="submit" class="btn-enviar">
+            ENVIAR REGISTRO
         </button>
-
     </form>
+</div>
 
+<!-- ========================= TICKET ========================= -->
+<div id="ticket" class="ticket oculto">
+    <div class="ticket-header">
+        <h2>MULTITOOLS</h2>
+        <div class="ticket-id">#<span id="ticketId">000000</span></div>
+    </div>
+    <hr>
+
+    <div class="ticket-section">
+        <h3>REMITE</h3>
+        <p><strong>Alexander Vásquez</strong></p>
+        <p>MULTITOOLS</p>
+        <p>RUC: 2060XXXXXXXX</p>
+        <p>Cel: 907008110</p>
+    </div>
+
+    <hr>
+
+    <div class="ticket-section">
+        <h3>DESTINATARIO</h3>
+        <p id="tNombre"></p>
+        <p id="tDni"></p>
+        <p id="tCelular"></p>
+        <p id="tAgencia"></p>
+    </div>
+
+    <hr>
+
+    <div class="ticket-section">
+        <h3>PEDIDO</h3>
+        <div id="tPedido" class="pedido-content" contenteditable="true">
+            <!-- El pedido se llena aquí y es editable -->
+        </div>
+        <small class="editable-hint">✏️ Haz clic para editar el pedido</small>
+    </div>
+
+    <hr>
+
+    <div class="ticket-footer">
+        <p id="tFechaHora"></p>
+        <p class="ticket-link" id="ticketLink"></p>
+    </div>
+
+    <button id="btnGuardarPedido" class="btn-guardar" style="display:none;">
+        💾 GUARDAR CAMBIOS
+    </button>
 </div>
 
 <script src="script.js"></script>
-
 </body>
-
 </html>
