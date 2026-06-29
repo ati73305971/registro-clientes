@@ -7,9 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Registro de Cliente | MULTITOOLS</title>
-    
-    <!-- CARGAR CON TIMESTAMP PARA EVITAR CACHÉ -->
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 
@@ -55,16 +53,24 @@
     </form>
 </div>
 
-<!-- ============ TICKET ============ -->
+<!-- ============ TICKET (TODOS LOS CAMPOS EDITABLES) ============ -->
 <div id="ticket" class="ticket oculto">
     
     <!-- HEADER: LOGO + DATOS -->
     <div class="ticket-header">
         <div class="ticket-datos-header">
-            <p><span class="label">NOMBRE</span><br><span id="tNombre" class="valor"></span></p>
-            <p><span class="label">DNI</span><br><span id="tDni" class="valor"></span></p>
-            <p><span class="label">CELULAR</span><br><span id="tCelular" class="valor"></span></p>
-            <p><span class="label">AGENCIA</span><br><span id="tAgencia" class="valor"></span></p>
+            <p><span class="label">NOMBRE</span><br>
+                <span id="tNombre" class="valor" contenteditable="true"></span>
+            </p>
+            <p><span class="label">DNI</span><br>
+                <span id="tDni" class="valor" contenteditable="true"></span>
+            </p>
+            <p><span class="label">CELULAR</span><br>
+                <span id="tCelular" class="valor" contenteditable="true"></span>
+            </p>
+            <p><span class="label">AGENCIA</span><br>
+                <span id="tAgencia" class="valor" contenteditable="true"></span>
+            </p>
         </div>
         <div class="ticket-logo-derecha">
             <img src="logo.png" alt="MULTITOOLS">
@@ -73,10 +79,11 @@
 
     <hr class="ticket-line">
 
-    <!-- PEDIDO -->
+    <!-- PEDIDO (EDITABLE) -->
     <div class="ticket-pedido">
         <div class="label">PEDIDO</div>
         <div id="tPedido" class="pedido-content" contenteditable="true"></div>
+        <small class="editable-hint">✎ Haz clic en cualquier campo para editarlo</small>
     </div>
 
     <hr class="ticket-line">
@@ -94,20 +101,18 @@
     <!-- FECHA -->
     <div class="ticket-fecha" id="tFechaHora"></div>
 
-    <button id="btnGuardarPedido" class="btn-guardar" style="display:none;">
-        GUARDAR
-    </button>
+    <!-- INDICADOR DE GUARDADO AUTOMÁTICO -->
+    <div id="autoSaveIndicator" style="text-align:center;font-size:9px;color:#999;margin-top:4px;display:none;">
+        ✓ Cambios guardados automáticamente
+    </div>
 </div>
 
-<!-- CARGAR SCRIPT CON TIMESTAMP -->
-<script src="script.js?v=6"></script>
+<script src="script.js?v=7"></script>
 
 <script>
     // FORZAR RECARGA DE LA PÁGINA SI VIENE DE UN CACHÉ
     (function() {
-        // Verificar si la URL tiene un parámetro de timestamp
         if (!window.location.search.includes('_t=')) {
-            // Si no tiene timestamp, agregarlo para evitar caché
             const separator = window.location.search ? '&' : '?';
             const timestamp = Date.now();
             window.location.href = window.location.href + separator + '_t=' + timestamp;
