@@ -45,7 +45,7 @@ body {
 }
 
 /* =============================================
-   CONTENEDOR PRINCIPAL
+   CONTENEDOR PRINCIPAL (Formulario)
    ============================================= */
 
 .contenedor {
@@ -155,7 +155,7 @@ h1 {
     background: #ffffff;
     max-width: 280px;
     width: 100%;
-    padding: 15px 12px;
+    padding: 10px 10px;
     border: 3px solid #f9c80e;
     border-radius: 8px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
@@ -173,62 +173,73 @@ h1 {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* LOGO EN TICKET */
-.ticket-logo {
-    text-align: center;
-    margin-bottom: 6px;
-}
+/* =============================================
+   HEADER: Logo a la derecha
+   ============================================= */
 
-.ticket-logo img {
-    max-width: 120px;
-    height: auto;
-}
-
-/* ID */
-.ticket-id {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 900;
-    color: #555;
-    background: #f5f5f5;
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    letter-spacing: 2px;
-}
-
-/* LÍNEAS */
-.ticket-line {
-    border: none;
-    border-top: 2px dashed #1a1a1a;
-    margin: 6px 0;
-}
-
-/* DATOS DEL CLIENTE */
-.ticket-cliente p {
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 8px;
     margin-bottom: 4px;
+}
+
+.ticket-datos-header {
+    flex: 1;
     font-size: 13px;
 }
 
-.ticket-cliente .label {
+.ticket-datos-header p {
+    margin-bottom: 2px;
+}
+
+.ticket-datos-header .label {
     font-weight: 900;
-    font-size: 11px;
+    font-size: 10px;
     color: #555;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
-.ticket-cliente .valor {
+.ticket-datos-header .valor {
     font-weight: 900;
-    font-size: 15px;
+    font-size: 16px;
     color: #1a1a1a;
     display: block;
-    line-height: 1.3;
+    line-height: 1.2;
 }
 
-/* PEDIDO */
-.ticket-pedido {
+.ticket-logo-derecha {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 80px;
+}
+
+.ticket-logo-derecha img {
+    max-width: 80px;
+    height: auto;
+    display: block;
+}
+
+/* =============================================
+   LÍNEAS
+   ============================================= */
+
+.ticket-line {
+    border: none;
+    border-top: 2px dashed #1a1a1a;
     margin: 4px 0;
+}
+
+/* =============================================
+   PEDIDO
+   ============================================= */
+
+.ticket-pedido {
+    margin: 3px 0;
 }
 
 .ticket-pedido .label {
@@ -243,12 +254,12 @@ h1 {
 
 .pedido-content {
     font-weight: 900;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.4;
-    padding: 6px 8px;
+    padding: 4px 6px;
     background: #f9f9f9;
     border-radius: 4px;
-    min-height: 40px;
+    min-height: 35px;
     border: 2px dashed #ddd;
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -261,10 +272,13 @@ h1 {
     background: #fff;
 }
 
-/* REMITE */
+/* =============================================
+   REMITE
+   ============================================= */
+
 .ticket-remite {
     text-align: center;
-    margin: 4px 0;
+    margin: 3px 0;
 }
 
 .ticket-remite .label {
@@ -277,22 +291,28 @@ h1 {
 
 .ticket-remite .valor {
     font-weight: 900;
-    font-size: 13px;
+    font-size: 14px;
     color: #1a1a1a;
     display: block;
     line-height: 1.3;
 }
 
-/* FECHA */
+/* =============================================
+   FECHA
+   ============================================= */
+
 .ticket-fecha {
     text-align: center;
     font-weight: 900;
     font-size: 11px;
     color: #777;
-    margin: 4px 0;
+    margin: 3px 0;
 }
 
-/* BOTONES */
+/* =============================================
+   BOTONES
+   ============================================= */
+
 .btn-guardar {
     width: 100%;
     padding: 10px;
@@ -303,7 +323,7 @@ h1 {
     font-size: 14px;
     font-weight: 900;
     cursor: pointer;
-    margin-top: 8px;
+    margin-top: 6px;
     transition: all 0.3s ease;
 }
 
@@ -311,7 +331,6 @@ h1 {
     background: #218838;
 }
 
-/* OCULTO */
 .oculto {
     display: none !important;
 }
@@ -325,16 +344,19 @@ h1 {
         padding: 25px 18px;
     }
     .ticket {
-        padding: 12px 10px;
+        padding: 8px 8px;
         max-width: 100%;
     }
-    .ticket-cliente .valor {
-        font-size: 14px;
+    .ticket-datos-header .valor {
+        font-size: 15px;
     }
     .pedido-content {
-        font-size: 15px;
-        min-height: 35px;
-        padding: 4px 6px;
+        font-size: 17px;
+        min-height: 30px;
+        padding: 3px 5px;
+    }
+    .ticket-logo-derecha img {
+        max-width: 65px;
     }
 }
 
@@ -369,7 +391,7 @@ h1 {
         box-shadow: none !important;
         border: 1px solid #1a1a1a !important;
         border-radius: 0 !important;
-        padding: 8px 10px !important;
+        padding: 6px 8px !important;
         margin: 0 auto !important;
         max-width: 100% !important;
         animation: none !important;
@@ -380,53 +402,53 @@ h1 {
         display: block !important;
     }
 
-    .ticket-logo img {
-        max-width: 100px !important;
-    }
-
-    .ticket-id {
-        font-size: 12px !important;
-        padding: 2px 6px !important;
-    }
-
-    .ticket-line {
-        margin: 4px 0 !important;
-        border-top: 1.5px dashed #1a1a1a !important;
-    }
-
-    .ticket-cliente p {
-        font-size: 12px !important;
+    .ticket-header {
+        gap: 4px !important;
         margin-bottom: 2px !important;
     }
 
-    .ticket-cliente .label {
-        font-size: 10px !important;
-    }
-
-    .ticket-cliente .valor {
-        font-size: 16px !important;
-        line-height: 1.2 !important;
-    }
-
-    .ticket-pedido .label {
+    .ticket-datos-header {
         font-size: 11px !important;
     }
 
-    .pedido-content {
+    .ticket-datos-header .label {
+        font-size: 8px !important;
+    }
+
+    .ticket-datos-header .valor {
         font-size: 18px !important;
+        line-height: 1.1 !important;
+    }
+
+    .ticket-logo-derecha img {
+        max-width: 70px !important;
+    }
+
+    .ticket-line {
+        margin: 3px 0 !important;
+        border-top: 1.5px dashed #1a1a1a !important;
+    }
+
+    .ticket-pedido .label {
+        font-size: 10px !important;
+    }
+
+    .pedido-content {
+        font-size: 20px !important;
         line-height: 1.3 !important;
-        padding: 4px 6px !important;
-        min-height: 30px !important;
+        padding: 3px 5px !important;
+        min-height: 28px !important;
         border: 1px solid #ccc !important;
         background: white !important;
     }
 
     .ticket-remite .valor {
-        font-size: 14px !important;
+        font-size: 15px !important;
+        line-height: 1.2 !important;
     }
 
     .ticket-remite .label {
-        font-size: 10px !important;
+        font-size: 9px !important;
     }
 
     .ticket-fecha {
