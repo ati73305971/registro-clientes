@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Registro de Cliente | MULTITOOLS</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    
+    <!-- CARGAR CON TIMESTAMP PARA EVITAR CACHÉ -->
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -94,6 +99,21 @@
     </button>
 </div>
 
-<script src="script.js?v=5"></script>
+<!-- CARGAR SCRIPT CON TIMESTAMP -->
+<script src="script.js?v=6"></script>
+
+<script>
+    // FORZAR RECARGA DE LA PÁGINA SI VIENE DE UN CACHÉ
+    (function() {
+        // Verificar si la URL tiene un parámetro de timestamp
+        if (!window.location.search.includes('_t=')) {
+            // Si no tiene timestamp, agregarlo para evitar caché
+            const separator = window.location.search ? '&' : '?';
+            const timestamp = Date.now();
+            window.location.href = window.location.href + separator + '_t=' + timestamp;
+        }
+    })();
+</script>
+
 </body>
 </html>
