@@ -3,7 +3,7 @@
 // =============================================
 
 (function limpiarCacheLocal() {
-    const version = '7.0';
+    const version = '7.1';
     const versionGuardada = localStorage.getItem('multitools_version');
     
     if (versionGuardada !== version) {
@@ -33,7 +33,7 @@ const CONFIG = {
     }
 };
 
-console.log('✅ Sistema v7 cargado - ' + new Date().toLocaleString());
+console.log('✅ Sistema v7.1 cargado - ' + new Date().toLocaleString());
 
 // =============================================
 // FUNCIONES DE CODIFICACION
@@ -78,29 +78,26 @@ function obtenerLocal(id) {
 }
 
 // =============================================
-// GUARDADO AUTOMÁTICO (CUANDO EL USUARIO ESCRIBE)
+// GUARDADO AUTOMÁTICO
 // =============================================
 
 function guardarCambiosAutomatico() {
     if (!datosActuales) return;
     
-    // Obtener los valores actuales de los campos editables
     const nombre = document.getElementById('tNombre')?.textContent.trim() || '';
     const dni = document.getElementById('tDni')?.textContent.trim() || '';
     const celular = document.getElementById('tCelular')?.textContent.trim() || '';
     const agencia = document.getElementById('tAgencia')?.textContent.trim() || '';
     const pedido = document.getElementById('tPedido')?.textContent.trim() || '';
     
-    // Verificar si hubo cambios
     if (datosActuales.nombre === nombre && 
         datosActuales.dni === dni && 
         datosActuales.celular === celular && 
         datosActuales.agencia === agencia && 
         datosActuales.pedido === pedido) {
-        return; // No hay cambios
+        return;
     }
     
-    // Actualizar datos
     datosActuales.nombre = nombre || 'No especificado';
     datosActuales.dni = dni || 'No especificado';
     datosActuales.celular = celular || 'No especificado';
@@ -108,15 +105,12 @@ function guardarCambiosAutomatico() {
     datosActuales.pedido = pedido || 'Sin pedido';
     datosActuales.fecha_edicion = new Date().toISOString();
     
-    // Guardar en localStorage
     guardarLocal(datosActuales);
     
-    // Actualizar el link (sin recargar)
     const datosEncoded = codificarDatos(datosActuales);
     const nuevaUrl = window.location.origin + window.location.pathname + '?data=' + datosEncoded;
     window.history.replaceState({}, '', nuevaUrl);
     
-    // Mostrar indicador de guardado
     const indicator = document.getElementById('autoSaveIndicator');
     if (indicator) {
         indicator.style.display = 'block';
@@ -173,7 +167,6 @@ function mostrarTicket(datos) {
     ticket.classList.add('visible');
     btnImprimirTicket.style.display = 'block';
     
-    // Configurar eventos para guardado automático
     configurarAutoSave();
     
     setTimeout(() => {
@@ -189,17 +182,15 @@ function configurarAutoSave() {
     const camposEditables = [tNombre, tDni, tCelular, tAgencia, tPedido];
     
     camposEditables.forEach(campo => {
-        // Guardar al perder el foco (cuando el usuario termina de editar)
         campo.addEventListener('blur', function() {
             guardarCambiosAutomatico();
         });
         
-        // Guardar mientras escribe (con debounce)
         campo.addEventListener('input', function() {
             clearTimeout(timeoutGuardado);
             timeoutGuardado = setTimeout(() => {
                 guardarCambiosAutomatico();
-            }, 500); // Espera 0.5 segundos después de dejar de escribir
+            }, 500);
         });
     });
 }
@@ -248,7 +239,7 @@ formulario.addEventListener('submit', function(e) {
 });
 
 // =============================================
-// CONSTRUIR MENSAJE WHATSAPP
+// CONSTRUIR MENSAJE WHATSAPP (MODIFICADO)
 // =============================================
 
 function construirMensajeWhatsApp(datos, urlTicket) {
@@ -270,7 +261,7 @@ function construirMensajeWhatsApp(datos, urlTicket) {
     mensaje += datos.pedido + '%0A%0A';
     
     mensaje += '---------------------%0A';
-    mensaje += 'Link para editar:%0A';
+    mensaje += 'Link datos envio:%0A';  // ← CAMBIADO AQUÍ
     mensaje += urlTicket;
     
     return mensaje;
@@ -291,7 +282,6 @@ function abrirWhatsApp(mensaje) {
 // =============================================
 
 btnImprimirTicket.addEventListener('click', function() {
-    // Guardar cambios antes de imprimir
     guardarCambiosAutomatico();
     setTimeout(() => {
         window.print();
@@ -361,5 +351,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    console.log('✅ Sistema v7 listo - Todos los campos editables');
+    console.log('✅ Sistema v7.1 listo');
 });
