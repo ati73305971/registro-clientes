@@ -13,7 +13,7 @@ const CONFIG = {
 };
 
 // =============================================
-// CODIFICACIÓN PARA URL
+// FUNCIONES DE CODIFICACIÓN/DECODIFICACIÓN
 // =============================================
 
 function codificarDatos(datos) {
@@ -21,6 +21,7 @@ function codificarDatos(datos) {
         const json = JSON.stringify(datos);
         return btoa(encodeURIComponent(json));
     } catch (e) {
+        console.error('Error al codificar:', e);
         return null;
     }
 }
@@ -30,6 +31,7 @@ function decodificarDatos(dataEncoded) {
         const json = decodeURIComponent(atob(dataEncoded));
         return JSON.parse(json);
     } catch (e) {
+        console.error('Error al decodificar:', e);
         return null;
     }
 }
@@ -70,13 +72,47 @@ const tCelular = document.getElementById('tCelular');
 const tAgencia = document.getElementById('tAgencia');
 const tPedido = document.getElementById('tPedido');
 const tFechaHora = document.getElementById('tFechaHora');
-const ticketId = document.getElementById('ticketId');
 
 const nombreInput = document.getElementById('nombre');
 const dniInput = document.getElementById('dni');
 const celularInput = document.getElementById('celular');
 const agenciaInput = document.getElementById('agencia');
 const pedidoInput = document.getElementById('pedido');
+
+// =============================================
+// MOSTRAR TICKET (función central)
+// =============================================
+
+function mostrarTicket(datos) {
+    console.log('📋 Mostrando ticket con datos:', datos);
+    
+    tNombre.textContent = datos.nombre || 'No especificado';
+    tDni.textContent = datos.dni || 'No especificado';
+    tCelular.textContent = datos.celular || 'No especificado';
+    tAgencia.textContent = datos.agencia || 'No especificado';
+    tPedido.textContent = datos.pedido || 'Sin pedido';
+    
+    const fecha = datos.fecha ? new Date(datos.fecha) : new Date();
+    tFechaHora.textContent = `${fecha.toLocaleDateString('es-PE')} ${fecha.toLocaleTimeString('es-PE')}`;
+
+    // Ocultar formulario
+    document.getElementById('formularioContainer').style.display = 'none';
+    
+    // Mostrar ticket
+    ticket.classList.remove('oculto');
+    ticket.classList.add('visible');
+    
+    // Mostrar botón de imprimir
+    btnImprimirTicket.style.display = 'block';
+    
+    // Mostrar botón guardar
+    btnGuardarPedido.style.display = 'block';
+    
+    // Scroll al ticket
+    setTimeout(() => {
+        ticket.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+}
 
 // =============================================
 // ENVIAR FORMULARIO
@@ -91,6 +127,7 @@ formulario.addEventListener('submit', function(e) {
     const agencia = agenciaInput.value.trim();
     const pedido = pedidoInput.value.trim();
 
+    // Validaciones
     if (!nombre) { alert('⚠️ Ingrese su Nombre Completo'); nombreInput.focus(); return; }
     if (!dni) { alert('⚠️ Ingrese su DNI / CE'); dniInput.focus(); return; }
     if (!celular) { alert('⚠️ Ingrese su número de Celular'); celularInput.focus(); return; }
@@ -98,9 +135,10 @@ formulario.addEventListener('submit', function(e) {
     if (!pedido) { alert('⚠️ Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
     if (celular.length < 9) { alert('⚠️ El celular debe tener 9 dígitos'); celularInput.focus(); return; }
 
-    // Generar ID (más corto)
+    // Generar ID (6 caracteres)
     const id = Math.random().toString(36).substring(2, 8).toUpperCase();
 
+    // Datos
     const datos = {
         id: id,
         nombre: nombre,
@@ -111,17 +149,19 @@ formulario.addEventListener('submit', function(e) {
         fecha: new Date().toISOString()
     };
 
+    // Guardar en localStorage
     guardarLocal(datos);
 
+    // Codificar para el link
     const datosEncoded = codificarDatos(datos);
     const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
 
+    // Mensaje WhatsApp
     const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
     abrirWhatsApp(mensajeWhatsApp);
 
+    // Mostrar ticket
     mostrarTicket(datos);
-    document.getElementById('formularioContainer').style.display = 'none';
-    btnImprimirTicket.style.display = 'block';
 });
 
 // =============================================
@@ -159,47 +199,46 @@ function abrirWhatsApp(mensaje) {
 }
 
 // =============================================
-// MOSTRAR TICKET
-// =============================================
-
-function mostrarTicket(datos) {
-    ticketId.textContent = datos.id || '000000';
-    tNombre.textContent = datos.nombre;
-    tDni.textContent = datos.dni;
-    tCelular.textContent = datos.celular;
-    tAgencia.textContent = datos.agencia;
-    tPedido.textContent = datos.pedido || 'Sin pedido';
-    
-    const fecha = datos.fecha ? new Date(datos.fecha) : new Date();
-    tFechaHora.textContent = `${fecha.toLocaleDateString('es-PE')} ${fecha.toLocaleTimeString('es-PE')}`;
-
-    ticket.classList.remove('oculto');
-    ticket.classList.add('visible');
-    btnGuardarPedido.style.display = 'block';
-    
-    setTimeout(() => {
-        ticket.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 300);
-}
-
-// =============================================
 // GUARDAR CAMBIOS DEL PEDIDO
 // =============================================
 
 btnGuardarPedido.addEventListener('click', function() {
-    const id = ticketId.textContent;
-    const nuevoPedido = tPedido.textContent.trim();
+    // Obtener el ID de los datos actuales
+    const params = new URLSearchParams(window.location.search);
+    const dataEncoded = params.get('data');
     
+    if (!dataEncoded) {
+        alert('❌ No se encontraron datos para actualizar');
+        return;
+    }
+    
+    const datos = decodificarDatos(dataEncoded);
+    if (!datos) {
+        alert('❌ Error al decodificar los datos');
+        return;
+    }
+    
+    const nuevoPedido = tPedido.textContent.trim();
     if (!nuevoPedido) {
         alert('⚠️ El pedido no puede estar vacío');
         return;
     }
     
-    if (actualizarLocal(id, nuevoPedido)) {
-        alert('✅ Pedido actualizado');
-    } else {
-        alert('❌ Error al guardar');
-    }
+    // Actualizar el pedido
+    datos.pedido = nuevoPedido;
+    datos.fecha_edicion = new Date().toISOString();
+    
+    // Guardar en localStorage
+    guardarLocal(datos);
+    
+    // Codificar nuevamente para actualizar el link
+    const nuevosDatosEncoded = codificarDatos(datos);
+    const nuevaUrl = `${window.location.origin}${window.location.pathname}?data=${nuevosDatosEncoded}`;
+    
+    // Actualizar la URL sin recargar
+    window.history.replaceState({}, '', nuevaUrl);
+    
+    alert('✅ Pedido actualizado correctamente');
 });
 
 // =============================================
@@ -231,26 +270,34 @@ nombreInput.addEventListener('blur', function() {
 });
 
 // =============================================
-// CARGAR DATOS POR URL
+// CARGAR DATOS DESDE LA URL (¡ESTA ES LA PARTE CLAVE!)
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Página cargada - Verificando URL...');
+    
+    // Obtener parámetros de la URL
     const params = new URLSearchParams(window.location.search);
     const dataEncoded = params.get('data');
     
+    console.log('📦 Data encoded encontrado:', dataEncoded ? 'SÍ' : 'NO');
+    
     if (dataEncoded) {
+        console.log('🔓 Decodificando datos...');
         const datos = decodificarDatos(dataEncoded);
+        
         if (datos) {
-            console.log('📋 Cargando registro:', datos.id);
-            document.getElementById('formularioContainer').style.display = 'none';
-            btnImprimirTicket.style.display = 'block';
+            console.log('✅ Datos decodificados correctamente:', datos);
             mostrarTicket(datos);
-            tPedido.textContent = datos.pedido || 'Sin pedido';
         } else {
-            alert('❌ Error al cargar los datos del link');
+            console.error('❌ Error al decodificar los datos');
+            alert('❌ Error al cargar los datos del link. El enlace puede estar dañado.');
         }
+    } else {
+        console.log('ℹ️ No hay datos en la URL - Mostrando formulario');
     }
     
+    // Logo fallback
     const logoImg = document.getElementById('logoImg');
     if (logoImg) {
         logoImg.onerror = function() {
