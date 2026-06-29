@@ -9,9 +9,7 @@ const CONFIG = {
         empresa: "MULTITOOLS",
         ruc: "2060XXXXXXXX",
         celular: "907008110"
-    },
-    // URL base para los links (cambia por tu dominio)
-    baseUrl: window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/')
+    }
 };
 
 // =============================================
@@ -25,33 +23,22 @@ function generarId() {
 }
 
 // =============================================
-// GUARDAR/OBTENER DATOS EN localStorage
+// CODIFICAR/DECODIFICAR DATOS EN URL
 // =============================================
 
-function guardarDatos(id, datos) {
-    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
-    registros[id] = {
-        ...datos,
-        fecha: new Date().toISOString(),
-        pedido: datos.pedido || ''
-    };
-    localStorage.setItem('multitools_registros', JSON.stringify(registros));
-    return registros[id];
+function codificarDatos(datos) {
+    // Convertir a JSON y luego a Base64
+    const json = JSON.stringify(datos);
+    return btoa(encodeURIComponent(json));
 }
 
-function obtenerDatos(id) {
-    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
-    return registros[id] || null;
-}
-
-function actualizarPedido(id, nuevoPedido) {
-    const registros = JSON.parse(localStorage.getItem('multitools_registros') || '{}');
-    if (registros[id]) {
-        registros[id].pedido = nuevoPedido;
-        localStorage.setItem('multitools_registros', JSON.stringify(registros));
-        return true;
+function decodificarDatos(dataEncoded) {
+    try {
+        const json = decodeURIComponent(atob(dataEncoded));
+        return JSON.parse(json);
+    } catch (e) {
+        return null;
     }
-    return false;
 }
 
 // =============================================
@@ -103,27 +90,29 @@ formulario.addEventListener('submit', function(e) {
     // Generar ID único
     const id = generarId();
 
-    // Guardar datos
+    // Datos a guardar
     const datos = {
-        nombre,
-        dni,
-        celular,
-        agencia,
-        pedido
+        id: id,
+        nombre: nombre,
+        dni: dni,
+        celular: celular,
+        agencia: agencia,
+        pedido: pedido,
+        fecha: new Date().toISOString()
     };
-    guardarDatos(id, datos);
 
-    // Construir URL del ticket
-    const urlTicket = `${window.location.origin}${window.location.pathname}?id=${id}`;
+    // Codificar datos en el link
+    const datosEncoded = codificarDatos(datos);
+    const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
 
-    // Construir mensaje WhatsApp con link
-    const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
+    // Construir mensaje WhatsApp
+    const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket);
 
     // Abrir WhatsApp
     abrirWhatsApp(mensajeWhatsApp);
 
     // Mostrar ticket
-    mostrarTicket(datos, id, urlTicket);
+    mostrarTicket(datos, urlTicket);
 
     // Ocultar formulario
     document.getElementById('formularioContainer').style.display = 'none';
@@ -134,9 +123,9 @@ formulario.addEventListener('submit', function(e) {
 // CONSTRUIR MENSAJE WHATSAPP CON LINK
 // =============================================
 
-function construirMensajeWhatsApp(datos, urlTicket, id) {
+function construirMensajeWhatsApp(datos, urlTicket) {
     let mensaje = '📦 *NUEVO REGISTRO DE ENVÍO*%0A%0A';
-    mensaje += `🆔 *ID:* ${id}%0A%0A`;
+    mensaje += `🆔 *ID:* ${datos.id}%0A%0A`;
     mensaje += '👤 *Nombre:*%0A';
     mensaje += `${datos.nombre}%0A%0A`;
     mensaje += '🆔 *DNI / CE:*%0A';
@@ -168,9 +157,9 @@ function abrirWhatsApp(mensaje) {
 // MOSTRAR TICKET
 // =============================================
 
-function mostrarTicket(datos, id, urlTicket) {
+function mostrarTicket(datos, urlTicket) {
     // Llenar datos
-    ticketId.textContent = id;
+    ticketId.textContent = datos.id || '000000';
     tNombre.textContent = `👤 ${datos.nombre}`;
     tDni.textContent = `🆔 ${datos.dni}`;
     tCelular.textContent = `📱 ${datos.celular}`;
@@ -178,8 +167,8 @@ function mostrarTicket(datos, id, urlTicket) {
     tPedido.textContent = datos.pedido || 'Sin pedido';
     
     // Fecha y hora
-    const ahora = new Date();
-    tFechaHora.textContent = `📅 ${ahora.toLocaleDateString('es-PE')} - ⏰ ${ahora.toLocaleTimeString('es-PE')}`;
+    const fecha = datos.fecha ? new Date(datos.fecha) : new Date();
+    tFechaHora.textContent = `📅 ${fecha.toLocaleDateString('es-PE')} - ⏰ ${fecha.toLocaleTimeString('es-PE')}`;
     
     // Link del ticket (para copiar)
     ticketLink.textContent = `🔗 ${urlTicket}`;
@@ -211,20 +200,41 @@ function mostrarTicket(datos, id, urlTicket) {
 // =============================================
 
 btnGuardarPedido.addEventListener('click', function() {
-    const id = ticketId.textContent;
-    const nuevoPedido = tPedido.textContent.trim();
+    const pedidoActual = tPedido.textContent.trim();
     
-    if (!nuevoPedido) {
+    if (!pedidoActual) {
         alert('⚠️ El pedido no puede estar vacío');
         return;
     }
     
-    if (actualizarPedido(id, nuevoPedido)) {
-        alert('✅ Pedido actualizado correctamente');
-        // Actualizar el contenido del ticket
-        tPedido.textContent = nuevoPedido;
-    } else {
-        alert('❌ Error al guardar el pedido');
+    // Obtener datos actuales del link
+    const params = new URLSearchParams(window.location.search);
+    const dataEncoded = params.get('data');
+    
+    if (dataEncoded) {
+        const datos = decodificarDatos(dataEncoded);
+        if (datos) {
+            // Actualizar el pedido
+            datos.pedido = pedidoActual;
+            datos.fecha = new Date().toISOString();
+            
+            // Crear nuevo link con datos actualizados
+            const nuevosDatosEncoded = codificarDatos(datos);
+            const nuevaUrl = `${window.location.origin}${window.location.pathname}?data=${nuevosDatosEncoded}`;
+            
+            // Actualizar el link en la URL (sin recargar)
+            window.history.replaceState({}, '', nuevaUrl);
+            
+            // Actualizar el link mostrado en el ticket
+            ticketLink.textContent = `🔗 ${nuevaUrl}`;
+            ticketLink.onclick = function() {
+                navigator.clipboard.writeText(nuevaUrl).then(() => {
+                    alert('✅ Link copiado al portapapeles');
+                });
+            };
+            
+            alert('✅ Pedido actualizado correctamente');
+        }
     }
 });
 
@@ -233,11 +243,6 @@ btnGuardarPedido.addEventListener('click', function() {
 // =============================================
 
 btnImprimirTicket.addEventListener('click', function() {
-    window.print();
-});
-
-// También imprimir con el botón viejo (por compatibilidad)
-document.getElementById('btnImprimir')?.addEventListener('click', function() {
     window.print();
 });
 
@@ -262,30 +267,30 @@ nombreInput.addEventListener('blur', function() {
 });
 
 // =============================================
-// CARGAR DATOS POR ID (si existe en URL)
+// CARGAR DATOS POR URL (si existe data en la URL)
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener ID de la URL
+    // Obtener datos de la URL
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
+    const dataEncoded = params.get('data');
     
-    if (id) {
-        const datos = obtenerDatos(id);
+    if (dataEncoded) {
+        const datos = decodificarDatos(dataEncoded);
         if (datos) {
-            console.log('📋 Cargando registro:', id);
+            console.log('📋 Cargando registro desde link:', datos.id);
             // Ocultar formulario
             document.getElementById('formularioContainer').style.display = 'none';
             btnImprimirTicket.style.display = 'block';
             
-            // Mostrar ticket con datos guardados
-            mostrarTicket(datos, id, window.location.href);
+            // Mostrar ticket con datos
+            mostrarTicket(datos, window.location.href);
             
             // Poner el pedido en editable
             tPedido.textContent = datos.pedido || 'Sin pedido';
         } else {
-            console.warn('⚠️ Registro no encontrado:', id);
-            alert('❌ Registro no encontrado');
+            console.warn('⚠️ Error al decodificar datos');
+            alert('❌ Error al cargar los datos del link');
         }
     }
     
@@ -304,6 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    console.log('✅ Sistema listo');
+    console.log('✅ Sistema listo - Versión con datos en URL');
     console.log('📱 Número WhatsApp:', CONFIG.whatsapp);
 });
