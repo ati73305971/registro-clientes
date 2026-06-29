@@ -9,7 +9,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Arial Black', Arial, Helvetica, sans-serif;
     background: #1a1a1a;
     min-height: 100vh;
     display: flex;
@@ -27,13 +27,13 @@ body {
     top: 20px;
     right: 20px;
     z-index: 999;
-    padding: 12px 20px;
+    padding: 15px 25px;
     background: #f9c80e;
     color: #1a1a1a;
     border: none;
     border-radius: 10px;
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 900;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
@@ -56,7 +56,6 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     border: 2px solid #f9c80e;
-    transition: all 0.3s ease;
 }
 
 .logo {
@@ -67,15 +66,13 @@ body {
 .logo img {
     max-width: 180px;
     height: auto;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 h1 {
     color: #1a1a1a;
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 900;
     text-align: center;
-    letter-spacing: -0.5px;
     margin-bottom: 8px;
     text-transform: uppercase;
 }
@@ -85,12 +82,7 @@ h1 {
     font-size: 15px;
     text-align: center;
     margin-bottom: 30px;
-    line-height: 1.5;
 }
-
-/* =============================================
-   CAMPOS
-   ============================================= */
 
 .campo {
     margin-bottom: 22px;
@@ -98,17 +90,15 @@ h1 {
 
 .campo label {
     display: block;
-    font-weight: 700;
+    font-weight: 900;
     color: #1a1a1a;
     font-size: 15px;
     margin-bottom: 6px;
-    letter-spacing: 0.3px;
 }
 
 .campo label::after {
     content: " *";
     color: #d32f2f;
-    font-weight: 800;
 }
 
 .campo input,
@@ -119,7 +109,6 @@ h1 {
     border: 2px solid #ddd;
     border-radius: 10px;
     background: #fafafa;
-    transition: all 0.3s ease;
     font-family: inherit;
     color: #1a1a1a;
 }
@@ -127,20 +116,9 @@ h1 {
 .campo input:focus,
 .campo textarea:focus {
     border-color: #f9c80e;
-    background: #ffffff;
     outline: none;
     box-shadow: 0 0 0 4px rgba(249, 200, 14, 0.2);
 }
-
-.campo textarea {
-    resize: vertical;
-    min-height: 60px;
-    line-height: 1.6;
-}
-
-/* =============================================
-   BOTÓN ENVIAR
-   ============================================= */
 
 .btn-enviar {
     width: 100%;
@@ -150,18 +128,16 @@ h1 {
     border: none;
     border-radius: 12px;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 2px;
     cursor: pointer;
-    transition: all 0.3s ease;
     box-shadow: 0 6px 0 #b38f0a;
     margin-top: 10px;
+    transition: all 0.3s ease;
 }
 
 .btn-enviar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 0 #b38f0a;
     background: #ffd633;
 }
 
@@ -171,20 +147,20 @@ h1 {
 }
 
 /* =============================================
-   TICKET - TAMAÑO PARA MINI IMPRESORA
+   TICKET - MINI IMPRESORA 80mm
    ============================================= */
 
 .ticket {
     display: none;
     background: #ffffff;
-    max-width: 400px;
+    max-width: 280px;
     width: 100%;
-    padding: 25px 20px;
+    padding: 15px 12px;
     border: 3px solid #f9c80e;
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     margin-top: 30px;
-    transition: all 0.3s ease;
+    font-family: 'Arial Black', Arial, Helvetica, sans-serif;
 }
 
 .ticket.visible {
@@ -197,130 +173,145 @@ h1 {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.ticket-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.ticket h2 {
-    font-size: 24px;
-    font-weight: 900;
+/* LOGO EN TICKET */
+.ticket-logo {
     text-align: center;
-    color: #1a1a1a;
-    letter-spacing: 3px;
+    margin-bottom: 6px;
 }
 
+.ticket-logo img {
+    max-width: 120px;
+    height: auto;
+}
+
+/* ID */
 .ticket-id {
-    font-size: 12px;
-    font-weight: 700;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
     color: #555;
     background: #f5f5f5;
-    padding: 4px 10px;
-    border-radius: 5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
 }
 
-.ticket hr {
+/* LÍNEAS */
+.ticket-line {
     border: none;
     border-top: 2px dashed #1a1a1a;
-    margin: 12px 0;
+    margin: 6px 0;
 }
 
-.ticket-section {
-    margin: 8px 0;
+/* DATOS DEL CLIENTE */
+.ticket-cliente p {
+    margin-bottom: 4px;
+    font-size: 13px;
 }
 
-.ticket h3 {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1a1a1a;
+.ticket-cliente .label {
+    font-weight: 900;
+    font-size: 11px;
+    color: #555;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 3px;
 }
 
-.ticket p {
-    font-size: 13px;
+.ticket-cliente .valor {
+    font-weight: 900;
+    font-size: 15px;
     color: #1a1a1a;
-    margin-bottom: 3px;
-    line-height: 1.5;
+    display: block;
+    line-height: 1.3;
 }
 
-.ticket p strong {
-    font-weight: 700;
+/* PEDIDO */
+.ticket-pedido {
+    margin: 4px 0;
 }
 
-/* =============================================
-   PEDIDO EDITABLE
-   ============================================= */
+.ticket-pedido .label {
+    font-weight: 900;
+    font-size: 12px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 2px;
+}
 
 .pedido-content {
-    font-size: 13px;
-    line-height: 1.6;
-    padding: 8px 10px;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1.4;
+    padding: 6px 8px;
     background: #f9f9f9;
-    border-radius: 6px;
-    min-height: 50px;
+    border-radius: 4px;
+    min-height: 40px;
     border: 2px dashed #ddd;
-    transition: all 0.3s ease;
     white-space: pre-wrap;
     word-wrap: break-word;
+    color: #1a1a1a;
 }
 
 .pedido-content:focus {
     border-color: #f9c80e;
-    background: #fff;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(249, 200, 14, 0.2);
+    background: #fff;
 }
 
-.editable-hint {
-    font-size: 10px;
-    color: #999;
-    display: block;
+/* REMITE */
+.ticket-remite {
     text-align: center;
-    margin-top: 4px;
+    margin: 4px 0;
 }
 
-/* =============================================
-   BOTÓN GUARDAR
-   ============================================= */
+.ticket-remite .label {
+    font-weight: 900;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
+.ticket-remite .valor {
+    font-weight: 900;
+    font-size: 13px;
+    color: #1a1a1a;
+    display: block;
+    line-height: 1.3;
+}
+
+/* FECHA */
+.ticket-fecha {
+    text-align: center;
+    font-weight: 900;
+    font-size: 11px;
+    color: #777;
+    margin: 4px 0;
+}
+
+/* BOTONES */
 .btn-guardar {
     width: 100%;
     padding: 10px;
     background: #28a745;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 900;
     cursor: pointer;
+    margin-top: 8px;
     transition: all 0.3s ease;
-    margin-top: 10px;
 }
 
 .btn-guardar:hover {
     background: #218838;
-    transform: scale(1.02);
 }
 
-.ticket-footer {
-    margin-top: 8px;
-    text-align: center;
-}
-
-.ticket-footer p {
-    font-size: 11px;
-    color: #555;
-}
-
-/* =============================================
-   OCULTO
-   ============================================= */
-
+/* OCULTO */
 .oculto {
     display: none !important;
 }
@@ -334,48 +325,27 @@ h1 {
         padding: 25px 18px;
     }
     .ticket {
-        padding: 18px 15px;
+        padding: 12px 10px;
         max-width: 100%;
     }
-    h1 {
-        font-size: 22px;
-    }
-    .campo input,
-    .campo textarea {
-        padding: 12px 14px;
+    .ticket-cliente .valor {
         font-size: 14px;
     }
-    .btn-enviar {
-        font-size: 17px;
-        padding: 14px;
-    }
-    .ticket h2 {
-        font-size: 20px;
-    }
-    .ticket p {
-        font-size: 12px;
-    }
     .pedido-content {
-        font-size: 12px;
-        padding: 6px 8px;
-        min-height: 40px;
-    }
-    .btn-imprimir-flotante {
-        top: 10px;
-        right: 10px;
-        padding: 8px 14px;
-        font-size: 13px;
+        font-size: 15px;
+        min-height: 35px;
+        padding: 4px 6px;
     }
 }
 
 /* =============================================
-   IMPRESIÓN - TAMAÑO TICKET (80mm)
+   IMPRESIÓN - MINI IMPRESORA 80mm
    ============================================= */
 
 @media print {
     @page {
         size: 80mm auto;
-        margin: 5mm 3mm;
+        margin: 0mm 2mm;
     }
 
     body {
@@ -390,8 +360,7 @@ h1 {
     .descripcion,
     .logo,
     .btn-imprimir-flotante,
-    #btnGuardarPedido,
-    .editable-hint {
+    #btnGuardarPedido {
         display: none !important;
     }
 
@@ -400,7 +369,7 @@ h1 {
         box-shadow: none !important;
         border: 1px solid #1a1a1a !important;
         border-radius: 0 !important;
-        padding: 10px 12px !important;
+        padding: 8px 10px !important;
         margin: 0 auto !important;
         max-width: 100% !important;
         animation: none !important;
@@ -411,48 +380,58 @@ h1 {
         display: block !important;
     }
 
-    .ticket h2 {
-        font-size: 18px !important;
-        letter-spacing: 2px !important;
+    .ticket-logo img {
+        max-width: 100px !important;
     }
 
-    .ticket h3 {
+    .ticket-id {
+        font-size: 12px !important;
+        padding: 2px 6px !important;
+    }
+
+    .ticket-line {
+        margin: 4px 0 !important;
+        border-top: 1.5px dashed #1a1a1a !important;
+    }
+
+    .ticket-cliente p {
         font-size: 12px !important;
         margin-bottom: 2px !important;
-        padding-bottom: 2px !important;
     }
 
-    .ticket p {
+    .ticket-cliente .label {
+        font-size: 10px !important;
+    }
+
+    .ticket-cliente .valor {
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+    }
+
+    .ticket-pedido .label {
         font-size: 11px !important;
-        margin-bottom: 2px !important;
-        line-height: 1.4 !important;
     }
 
     .pedido-content {
-        font-size: 11px !important;
+        font-size: 18px !important;
+        line-height: 1.3 !important;
         padding: 4px 6px !important;
         min-height: 30px !important;
         border: 1px solid #ccc !important;
         background: white !important;
     }
 
-    .ticket hr {
-        margin: 6px 0 !important;
-        border-top: 1px dashed #1a1a1a !important;
+    .ticket-remite .valor {
+        font-size: 14px !important;
     }
 
-    .ticket-id {
+    .ticket-remite .label {
         font-size: 10px !important;
-        padding: 2px 6px !important;
     }
 
-    .ticket-footer p {
-        font-size: 9px !important;
-    }
-
-    .ticket-link {
-        font-size: 9px !important;
-        word-break: break-all !important;
+    .ticket-fecha {
+        font-size: 10px !important;
+        margin: 2px 0 !important;
     }
 
     #btnImprimir {
