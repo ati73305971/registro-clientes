@@ -229,11 +229,11 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 110px;
+    max-width: 100px;
 }
 
 .ticket-logo-derecha img {
-    max-width: 110px;
+    max-width: 100px;
     height: auto;
     display: block;
 }
