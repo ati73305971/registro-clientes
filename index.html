@@ -4,18 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Cliente | MULTITOOLS</title>
-    
-    <!-- CARGAR CON VERSIÓN PARA EVITAR CACHÉ -->
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
-<!-- BOTÓN IMPRIMIR -->
 <button id="btnImprimirTicket" class="btn-imprimir-flotante" style="display:none;">
     🖨️ IMPRIMIR TICKET
 </button>
 
-<!-- ============ FORMULARIO ============ -->
 <div class="contenedor" id="formularioContainer">
     <div class="logo">
         <img src="logo.png" alt="MULTITOOLS" id="logoImg">
@@ -54,23 +50,25 @@
     </form>
 </div>
 
-<!-- ============ TICKET ============ -->
+<!-- ============ TICKET (Logo a la derecha) ============ -->
 <div id="ticket" class="ticket oculto">
-    <div class="ticket-logo">
-        <img src="logo.png" alt="MULTITOOLS">
+    
+    <!-- HEADER: LOGO + DATOS -->
+    <div class="ticket-header">
+        <div class="ticket-datos-header">
+            <p><span class="label">NOMBRE</span><br><span id="tNombre" class="valor"></span></p>
+            <p><span class="label">DNI</span><br><span id="tDni" class="valor"></span></p>
+            <p><span class="label">CELULAR</span><br><span id="tCelular" class="valor"></span></p>
+            <p><span class="label">AGENCIA</span><br><span id="tAgencia" class="valor"></span></p>
+        </div>
+        <div class="ticket-logo-derecha">
+            <img src="logo.png" alt="MULTITOOLS">
+        </div>
     </div>
 
     <hr class="ticket-line">
 
-    <div class="ticket-cliente">
-        <p><span class="label">NOMBRE</span><br><span id="tNombre" class="valor"></span></p>
-        <p><span class="label">DNI</span><br><span id="tDni" class="valor"></span></p>
-        <p><span class="label">CELULAR</span><br><span id="tCelular" class="valor"></span></p>
-        <p><span class="label">AGENCIA</span><br><span id="tAgencia" class="valor"></span></p>
-    </div>
-
-    <hr class="ticket-line">
-
+    <!-- PEDIDO -->
     <div class="ticket-pedido">
         <div class="label">PEDIDO</div>
         <div id="tPedido" class="pedido-content" contenteditable="true"></div>
@@ -78,6 +76,7 @@
 
     <hr class="ticket-line">
 
+    <!-- REMITE -->
     <div class="ticket-remite">
         <p><span class="label">REMITE</span><br><span class="valor">Alexander Vásquez</span></p>
         <p><span class="valor">MULTITOOLS</span></p>
@@ -87,6 +86,7 @@
 
     <hr class="ticket-line">
 
+    <!-- FECHA -->
     <div class="ticket-fecha" id="tFechaHora"></div>
 
     <button id="btnGuardarPedido" class="btn-guardar" style="display:none;">
@@ -94,8 +94,6 @@
     </button>
 </div>
 
-<!-- CARGAR SCRIPT CON VERSIÓN -->
-<script src="script.js?v=3"></script>
-
+<script src="script.js?v=4"></script>
 </body>
 </html>
