@@ -1,4 +1,23 @@
 // =============================================
+// CONTROL DE VERSIÓN - EVITA CACHÉ
+// =============================================
+
+const VERSION = '3.0';
+const versionGuardada = localStorage.getItem('multitools_version');
+
+if (versionGuardada !== VERSION) {
+    console.log('🔄 Nueva versión detectada (v' + VERSION + ') - Limpiando caché...');
+    localStorage.setItem('multitools_version', VERSION);
+    
+    // Si la URL no tiene un parámetro de versión, forzar recarga
+    if (!window.location.search.includes('v=')) {
+        const separator = window.location.search ? '&' : '?';
+        window.location.href = window.location.href + separator + 'v=' + VERSION;
+        // Nota: el código se detiene aquí y recarga la página
+    }
+}
+
+// =============================================
 // CONFIGURACIÓN
 // =============================================
 
@@ -11,6 +30,8 @@ const CONFIG = {
         celular: "907008110"
     }
 };
+
+console.log('✅ Sistema v' + VERSION + ' cargado correctamente');
 
 // =============================================
 // FUNCIONES DE CODIFICACIÓN/DECODIFICACIÓN
@@ -80,7 +101,7 @@ const agenciaInput = document.getElementById('agencia');
 const pedidoInput = document.getElementById('pedido');
 
 // =============================================
-// MOSTRAR TICKET (función central)
+// MOSTRAR TICKET
 // =============================================
 
 function mostrarTicket(datos) {
@@ -95,20 +116,12 @@ function mostrarTicket(datos) {
     const fecha = datos.fecha ? new Date(datos.fecha) : new Date();
     tFechaHora.textContent = `${fecha.toLocaleDateString('es-PE')} ${fecha.toLocaleTimeString('es-PE')}`;
 
-    // Ocultar formulario
     document.getElementById('formularioContainer').style.display = 'none';
-    
-    // Mostrar ticket
     ticket.classList.remove('oculto');
     ticket.classList.add('visible');
-    
-    // Mostrar botón de imprimir
     btnImprimirTicket.style.display = 'block';
-    
-    // Mostrar botón guardar
     btnGuardarPedido.style.display = 'block';
     
-    // Scroll al ticket
     setTimeout(() => {
         ticket.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
@@ -127,7 +140,6 @@ formulario.addEventListener('submit', function(e) {
     const agencia = agenciaInput.value.trim();
     const pedido = pedidoInput.value.trim();
 
-    // Validaciones
     if (!nombre) { alert('⚠️ Ingrese su Nombre Completo'); nombreInput.focus(); return; }
     if (!dni) { alert('⚠️ Ingrese su DNI / CE'); dniInput.focus(); return; }
     if (!celular) { alert('⚠️ Ingrese su número de Celular'); celularInput.focus(); return; }
@@ -135,10 +147,8 @@ formulario.addEventListener('submit', function(e) {
     if (!pedido) { alert('⚠️ Ingrese el detalle del PEDIDO'); pedidoInput.focus(); return; }
     if (celular.length < 9) { alert('⚠️ El celular debe tener 9 dígitos'); celularInput.focus(); return; }
 
-    // Generar ID (6 caracteres)
     const id = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    // Datos
     const datos = {
         id: id,
         nombre: nombre,
@@ -149,18 +159,14 @@ formulario.addEventListener('submit', function(e) {
         fecha: new Date().toISOString()
     };
 
-    // Guardar en localStorage
     guardarLocal(datos);
 
-    // Codificar para el link
     const datosEncoded = codificarDatos(datos);
     const urlTicket = `${window.location.origin}${window.location.pathname}?data=${datosEncoded}`;
 
-    // Mensaje WhatsApp
     const mensajeWhatsApp = construirMensajeWhatsApp(datos, urlTicket, id);
     abrirWhatsApp(mensajeWhatsApp);
 
-    // Mostrar ticket
     mostrarTicket(datos);
 });
 
@@ -203,7 +209,6 @@ function abrirWhatsApp(mensaje) {
 // =============================================
 
 btnGuardarPedido.addEventListener('click', function() {
-    // Obtener el ID de los datos actuales
     const params = new URLSearchParams(window.location.search);
     const dataEncoded = params.get('data');
     
@@ -224,18 +229,14 @@ btnGuardarPedido.addEventListener('click', function() {
         return;
     }
     
-    // Actualizar el pedido
     datos.pedido = nuevoPedido;
     datos.fecha_edicion = new Date().toISOString();
     
-    // Guardar en localStorage
     guardarLocal(datos);
     
-    // Codificar nuevamente para actualizar el link
     const nuevosDatosEncoded = codificarDatos(datos);
     const nuevaUrl = `${window.location.origin}${window.location.pathname}?data=${nuevosDatosEncoded}`;
     
-    // Actualizar la URL sin recargar
     window.history.replaceState({}, '', nuevaUrl);
     
     alert('✅ Pedido actualizado correctamente');
@@ -270,13 +271,12 @@ nombreInput.addEventListener('blur', function() {
 });
 
 // =============================================
-// CARGAR DATOS DESDE LA URL (¡ESTA ES LA PARTE CLAVE!)
+// CARGAR DATOS DESDE LA URL
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Página cargada - Verificando URL...');
     
-    // Obtener parámetros de la URL
     const params = new URLSearchParams(window.location.search);
     const dataEncoded = params.get('data');
     
@@ -291,10 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
             mostrarTicket(datos);
         } else {
             console.error('❌ Error al decodificar los datos');
-            alert('❌ Error al cargar los datos del link. El enlace puede estar dañado.');
+            alert('❌ Error al cargar los datos del link');
         }
-    } else {
-        console.log('ℹ️ No hay datos en la URL - Mostrando formulario');
     }
     
     // Logo fallback
