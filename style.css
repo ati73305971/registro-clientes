@@ -19,7 +19,7 @@ body {
 }
 
 /* =============================================
-   BOTÓN IMPRIMIR FLOTANTE
+   BOTON IMPRIMIR FLOTANTE
    ============================================= */
 
 .btn-imprimir-flotante {
@@ -45,7 +45,7 @@ body {
 }
 
 /* =============================================
-   CONTENEDOR PRINCIPAL (Formulario)
+   CONTENEDOR PRINCIPAL
    ============================================= */
 
 .contenedor {
@@ -174,7 +174,7 @@ h1 {
 }
 
 /* =============================================
-   HEADER: Logo a la derecha
+   HEADER: Logo a la derecha (MAS GRANDE)
    ============================================= */
 
 .ticket-header {
@@ -215,17 +215,17 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 80px;
+    max-width: 100px;
 }
 
 .ticket-logo-derecha img {
-    max-width: 80px;
+    max-width: 100px;
     height: auto;
     display: block;
 }
 
 /* =============================================
-   LÍNEAS
+   LINEAS
    ============================================= */
 
 .ticket-line {
@@ -356,12 +356,12 @@ h1 {
         padding: 3px 5px;
     }
     .ticket-logo-derecha img {
-        max-width: 65px;
+        max-width: 80px;
     }
 }
 
 /* =============================================
-   IMPRESIÓN - MINI IMPRESORA 80mm
+   IMPRESION - MINI IMPRESORA 80mm
    ============================================= */
 
 @media print {
@@ -421,7 +421,7 @@ h1 {
     }
 
     .ticket-logo-derecha img {
-        max-width: 70px !important;
+        max-width: 90px !important;
     }
 
     .ticket-line {
